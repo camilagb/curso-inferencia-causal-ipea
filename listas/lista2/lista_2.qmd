@@ -1,0 +1,215 @@
+---
+title: "Resolução da lista 2"
+subtitle: "Curso de inferência causal"
+author: "Camila Brito"
+format: pdf
+lang: pt
+execute:
+    warning: false
+---
+
+# Parte 1 - Estatística descritiva
+
+```{r}
+# instalando o pacote
+# install.packages('remotes')
+# remotes::install_github('rfsaldanha/microdatasus')
+
+# carregando os pacotes
+library(microdatasus) 
+library(dplyr) 
+library(ggplot2)
+
+# lendo os dados
+data <- fetch_datasus(
+    year_start = 2023, month_start = 1, year_end = 2023, month_end = 12, 
+    information_system = "SINASC", uf = "GO"
+)
+```
+
+## 1. Preparação dos dados
+
+Seleção das colunas necessárias, de acordo com a [referência](https://rfsaldanha.github.io/sis/assets/sinasc/Estrutura_SINASC_para_CD.pdf).
+
+- PESO: Peso ao nascer, em gramas
+- IDADEMAE: Idade da mãe em anos
+- ESCMAE: Escolaridade da mãe (anos de estudo concluídos):
+  - 1: nenhuma
+  - 2: 1 a 3 anos
+  - 3: 4 a 7 anos
+  - 4: 8 a 11 anos
+  - 5: 12 e mais
+  - 9: ignorado
+
+```{r}
+s_data <- data |>
+  select(PESO, IDADEMAE, ESCMAE) |>
+  mutate(
+    PESO = as.numeric(PESO),
+    IDADEMAE = as.numeric(IDADEMAE),
+  ) |>
+  filter(!is.na(PESO)) |>
+  mutate(
+    ESCMAE = factor(
+      ESCMAE,
+      levels = c('1', '2', '3', '4', '5', '9'),
+      labels = c('Nenhuma', '1-3', '4-7', '8-11','12+', 'Ignorado')  
+    )
+  )
+glimpse(s_data)
+```
+
+## 2. Média e variabilidade
+
+
+```{r}
+media <- mean(s_data$PESO, na.rm = TRUE)
+desvio <- sd(s_data$PESO, na.rm = TRUE)
+n <- as.numeric(nrow(s_data))
+ep <-  desvio/sqrt(n)
+
+media
+desvio
+ep
+```
+
+O desvio padrão é a variabilidade da amostra, enquanto o erro padrão é a precisão da estimativa da média e depende do tamnho da amostra. Nesse caso, como temos um `n` grande, temos um erro padrão de menos de 2 gramas.
+
+## 3. Intervalo de confiança 
+
+
+```{r}
+ic <- c(media - 1.96*ep, media + 1.96*ep)
+ic
+```
+
+O intervalo de confiança de 95% significa que se a amostragem for repetida infinitas vezes, 95% dos intervalos construídos conterão o verdadeiro valor da média. Nesse caso, a média está entre 3106 e 3113 gramas com 95% de confiança.
+
+## 4. Visualização
+
+
+```{r}
+histograma <- s_data |>
+  ggplot() +
+  aes(x = PESO) +
+  geom_histogram(binwidth = 100)
+
+histograma
+```
+
+# Parte II - Regressão Linear
+
+## 5. Regressão simples
+
+```{r}
+modelo_linear <- lm(PESO ~ IDADEMAE, data = s_data)
+summary(modelo_linear)
+```
+
+Significado dos coeficientes:
+
+- `intercepto = 3066.43` representa o valor da variável dependente (PESO) quando a variável independente (IDADEMAE) é 0. Não tem muito significado prático, pois a idade da mãe nunca será 0.
+- `beta = 1.57` é a inclinação da reta, diz o quanto o incremento da variável independente impacta na variável dependente, ou seja, um aumento médio esperado de 1.57 gramas no peso do bebê para cada ano a mais na idade da mãe.
+
+Um ponto importante, R2 é muito pequeno (`R2 = 0.0003576`), o que significa que a idade da mãe explica muito pouco (menos de 1%) o peso ao nascer.
+
+## 6. $\beta$ como estimador: variabilidade amostral
+
+#### Estimando o $\beta$ para subamostras de 100
+
+```{r}
+betas100 = c()
+for (i in 1:1000){
+  amostra <- s_data |> slice_sample(n=100)
+  modelo <- lm(PESO ~ IDADEMAE, data = amostra)
+  betas100 <- c(betas100, modelo$coefficients[[2]])
+}
+
+df100 <- data.frame(betas100)
+df100 |> ggplot() + aes(x=betas100) + geom_histogram(binwidth = 2)
+
+summary(df100)
+```
+
+Para amostras de 100, o $\beta$ varia de -28 a +30, numa distribuição normal de média 1.87.
+
+#### Estimando o $\beta$ para subamostras de 1000
+
+```{r}
+betas1000 = c()
+for (i in 1:1000){
+  amostra <- s_data |> slice_sample(n=1000)
+  modelo <- lm(PESO ~ IDADEMAE, data = amostra)
+  betas1000 <- c(betas1000, modelo$coefficients[[2]])
+}
+
+df1000 <- data.frame(betas1000)
+df1000 |> ggplot() + aes(x=betas1000) + geom_histogram(binwidth = 1)
+
+summary(df1000)
+```
+
+Para amostras de 1000, o $\beta$ varia de -8 a +11, num distribuição normal de média 1.4.
+
+#### Estimando o $\beta$ para subamostras de 10000
+
+```{r}
+betas10k = c()
+for (i in 1:1000){
+  amostra <- s_data |> slice_sample(n=10000)
+  modelo <- lm(PESO ~ IDADEMAE, data = amostra)
+  betas10k <- c(betas10k, modelo$coefficients[[2]])
+}
+
+df10k <- data.frame(betas10k)
+df10k |> ggplot() + aes(x=betas10k) + geom_histogram(binwidth = 0.5)
+
+summary(df10k)
+```
+
+Para amostras de 10000, o beta varia de -1.2 a +4, num distribuição mais ou menos normal de média 1.59.
+
+#### Comparando os experimentos
+
+```{r}
+betas <- bind_rows(
+  data.frame(beta = betas100, group = 'n_100'),
+  data.frame(beta = betas1000, group = 'n_1000'),
+  data.frame(beta = betas10k, group = 'n_10000'),
+)
+
+betas |> 
+  ggplot() +
+  aes(x = beta, fill = group) +
+  geom_density(alpha = 0.3)
+```
+
+a. Os valores estimados para $\beta$ são diferentes entre cada amostra, visto que a estimação depende da amsotra selecionada
+b. A medida que o tamanho da amostra aumenta, a dispersão dos valores de $\beta$ diminui
+c. Esse comportamento demonstra exatamente a relação do erro padrão com o tamanho amostral, quanto maior a amostra, menor o erro
+d. A confiabilidade de coeficiente estimado em regressão está fortemente ligado à amostra e ao seu tamanho
+
+
+## 7. Regressão com controle
+
+```{r}
+modelo_multiplo <- lm(PESO ~ IDADEMAE + ESCMAE, data = s_data)
+
+summary(modelo_multiplo)
+```
+
+Os betas relacionados à escolaridade são bem maiores, mostrando que o impacto de mais anos de escolaridade é maior no peso do que a idade da mãe. O R2 aumentou, mostrando que o novo modelo tem um maior poder de explicar o peso ao nascer, porém ainda é bastante baixo.
+
+## 8. Interpretação econômica
+
+Provavelmente, mães com mais escolaridade possuem renda maior e maior acesso a alimentos de boa qualidade, o que impacta o peso ao nascer.
+
+# Parte III - Ligando com casualidade
+
+## 9. Associação vs causalidade
+
+Não é possível estimar os coeficientes como causais, pois existem muitas variávies omitidas.
+
+## 10. Contrafactual
+
+O contrafactual para a influência da idade da mãe no peso do bebê seria o peso do mesmo bebê para a mãe com idades diferentes. 
