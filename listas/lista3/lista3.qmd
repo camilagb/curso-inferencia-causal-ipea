@@ -1,0 +1,75 @@
+---
+title: "Resolução da lista 3"
+subtitle: "Curso de inferência causal"
+author: "Camila Brito"
+format: html
+lang: pt
+---
+
+# Seção 1 - Questões conceituais e teóricas
+
+## 1. Correlação, Causalidade e Variáveis de Confusão
+
+a. A correlação entre X e Y é definida por
+ 
+$$
+\text{Corr}(X, Y) = \frac{\text{cov}(X, Y)}{\sigma_x \sigma_y} = \frac{E[(X - \mu_x)(Y - \mu_y)]}{\sigma_x \sigma_y}
+$$
+
+e possui as seguintes propriedades:
+
+- o valor de $\text{corr}(X, Y)$ está sempre entre -1 e 1 (normalizada);
+- $\text{corr}(X, Y) = \pm 1$ quando X e Y tem uma perfeita relação linear positiva ou negativa; e
+- $\text{corr}(X, Y) = 0$ sugere que não há relação linear entre X e Y.
+
+b. A correlação entre afogamentos e sorvetes não pode ser interpretada como causal. Uma variável confundidora, que pode causar tanto o maior número de afogamento quanto o maior consumo de sorvete, pode ser simplesmente a temperatura alta que faz no país, como mostra a DAG.
+
+```{r}
+#| echo: false
+dag <- ggdag::dagify(
+    sorvete  ~ calor,
+    nadar ~ calor,
+    afogar ~ nadar
+)
+
+ggdag::ggdag(dag, text_col = 'grey', node_size = 20) + ggdag::theme_dag_blank()
+```
+
+c. A presença de variáveis de confusão impede a interpretação causal de uma correlação observada por criar outros caminhos entre o tratamento e resultado, o que gera um **viés**. Para isolar o efeito causal, é necessário bloquear ou cortar a relação entre a variável confundidora e o tratamento. No caso do exemplo, podemos controlar o calor para que reste apenas o efeito de tomar sorvete sobre afogamentos ou então aleatorizar o tratamento (tomar sorvete).
+
+
+## 2. Framework de resultados potenciais
+
+a. $Y_i(1)$ é o resultado potencial do indivíduo $i$, caso ele receba o tratamento e $Y_i(0)$ é o resultado potencial caso o mesmo indivíduo $i$ não receba o tratamento. Eles são chamados potenciais porque qualquer um dos dois resultados pode acontecer, mas nunca podem ser observados ao mesmo tempo.
+
+b. A equação de chaveamento é dada por
+
+$$
+Y_i = 
+\begin{cases}
+Y_i(1), se D_i = 1 \\
+Y_i(0), se D_i = 0
+\end{cases}
+$$
+
+c. O problema fundamental da inferência causal é que, como só podemos observar um dos resultados potenciais, não podemos estimar diretamente o efeito causal do tratamento $\delta_i = Y_i(1) - Y_i(0)$ no indivíduo. É um problema de dado faltante pois não temos o **contrafactual**.
+
+## 3. Parâmetros de interesse: ATE, ATT e ATU
+
+a. As definições são dados por
+
+$$
+ATE = E[Y_i(1) - Y_i(0)] = E[Y_i(1)] - E[Y_i(0)]
+$$
+$$
+ATT = E[Y_i(1) - Y_i(0)| D_i = 1] = E[Y_i(1)| D_i = 1] - E[Y_i(0)| D_i = 1]
+$$
+$$
+ATU = E[Y_i(1) - Y_i(0)| D_i = 0] = E[Y_i(1)| D_i = 0] - E[Y_i(0)| D_i = 0]
+$$
+
+O ATE é o efeito calculado em toada a população, ATT é o efeito calculado apenas nos tratados e o ATU é o efeito calculado apenas nos não tratados.
+
+b. 
+
+c. 
