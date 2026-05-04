@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Camila Brito">
+
+<title>Resolução da lista 4</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="lista4_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lista4_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="lista4_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="lista4_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="lista4_files/libs/quarto-html/popper.min.js"></script>
+<script src="lista4_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="lista4_files/libs/quarto-html/anchor.min.js"></script>
+<link href="lista4_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lista4_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="lista4_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="lista4_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="lista4_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Resolução da lista 4</h1>
+<p class="subtitle lead">Curso de inferência causal</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor</div>
+    <div class="quarto-title-meta-contents">
+             <p>Camila Brito </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># carregando os pacotes</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(microdatasus) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># lendo os dados</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">fetch_datasus</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">year_start =</span> <span class="dv">2023</span>, <span class="at">month_start =</span> <span class="dv">1</span>, <span class="at">year_end =</span> <span class="dv">2023</span>, <span class="at">month_end =</span> <span class="dv">12</span>, </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">information_system =</span> <span class="st">"SINASC"</span>, <span class="at">uf =</span> <span class="st">"GO"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="parte-i---preparação-dos-dados-e-correlações" class="level1">
+<h1>Parte I - Preparação dos dados e correlações</h1>
+<section id="preparação-dos-dados" class="level2">
+<h2 class="anchored" data-anchor-id="preparação-dos-dados">1. Preparação dos dados</h2>
+<p>Seleção das colunas necessárias, de acordo com a <a href="https://rfsaldanha.github.io/sis/assets/sinasc/Estrutura_SINASC_para_CD.pdf">referência</a>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>s_data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PESO, IDADEMAE, ESCMAE, CONSULTAS, PARTO) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">peso =</span> <span class="fu">as.numeric</span>(PESO),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">idade_mae =</span> <span class="fu">as.numeric</span>(IDADEMAE),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">escolaridade_mae_numerico =</span> <span class="fu">as.numeric</span>(ESCMAE),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">escolaridade_mae =</span> <span class="fu">factor</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      ESCMAE,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'1'</span>, <span class="st">'2'</span>, <span class="st">'3'</span>, <span class="st">'4'</span>, <span class="st">'5'</span>, <span class="st">'9'</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Nenhuma'</span>, <span class="st">'1-3'</span>, <span class="st">'4-7'</span>, <span class="st">'8-11'</span>,<span class="st">'12+'</span>, <span class="st">'ignorado'</span>),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="co"># ordered = TRUE  </span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">consultas =</span> <span class="fu">as.numeric</span>(CONSULTAS),</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">consultas_factor =</span> <span class="fu">factor</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      CONSULTAS,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'1'</span>, <span class="st">'2'</span>, <span class="st">'3'</span>, <span class="st">'4'</span>, <span class="st">'9'</span>),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Nenhuma'</span>, <span class="st">'1-3'</span>, <span class="st">'4-6'</span>, <span class="st">'7+'</span>, <span class="st">'ignorado'</span>),</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">parto =</span> <span class="fu">factor</span>(</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        PARTO,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'1'</span>, <span class="st">'2'</span>, <span class="st">'9'</span>),</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'vaginal'</span>, <span class="st">'cesareo'</span>, <span class="st">'ignorado'</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(peso, idade_mae, escolaridade_mae_numerico, escolaridade_mae, consultas, consultas_factor, parto) <span class="sc">|&gt;</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># removendo as colunas marcadas como 'ignorado'</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(consultas <span class="sc">!=</span> <span class="dv">9</span> <span class="sc">&amp;</span> escolaridade_mae <span class="sc">!=</span> <span class="st">'ignorado'</span> <span class="sc">&amp;</span> parto <span class="sc">!=</span> <span class="st">'ignorado'</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(s_data)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      peso        idade_mae     escolaridade_mae_numerico escolaridade_mae
+ Min.   : 135   Min.   :11.00   Min.   :1.000             Nenhuma :   61  
+ 1st Qu.:2844   1st Qu.:22.00   1st Qu.:4.000             1-3     :  455  
+ Median :3150   Median :27.00   Median :4.000             4-7     : 6350  
+ Mean   :3110   Mean   :27.45   Mean   :4.204             8-11    :58569  
+ 3rd Qu.:3444   3rd Qu.:32.00   3rd Qu.:5.000             12+     :26088  
+ Max.   :6550   Max.   :58.00   Max.   :5.000             ignorado:    0  
+   consultas     consultas_factor      parto      
+ Min.   :1.000   Nenhuma :  958   vaginal :29070  
+ 1st Qu.:4.000   1-3     : 4499   cesareo :62453  
+ Median :4.000   4-6     :16725   ignorado:    0  
+ Mean   :3.688   7+      :69341                   
+ 3rd Qu.:4.000   ignorado:    0                   
+ Max.   :4.000                                    </code></pre>
+</div>
+</div>
+</section>
+<section id="identificando-as-variáveis-no-framework-causal" class="level2">
+<h2 class="anchored" data-anchor-id="identificando-as-variáveis-no-framework-causal">2. Identificando as variáveis no framework causal</h2>
+<p>Definindo o tratamento <span class="math inline">\(D_i\)</span> como o número adequado de consultas pré-natal (masi de 7 consultas).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criação da variável de tratamento</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>t_data <span class="ot">&lt;-</span> s_data <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">pre_natal_adequado =</span> <span class="fu">ifelse</span>(consultas <span class="sc">==</span> <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol type="a">
+<li>A proporção de bebês cujas mães realizaram o pré-natal adequado é dado por</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>t_data <span class="sc">|&gt;</span> <span class="fu">group_by</span>(pre_natal_adequado) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">proporcao =</span> <span class="dv">100</span><span class="sc">*</span>(n<span class="sc">/</span><span class="fu">nrow</span>(t_data)))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  pre_natal_adequado     n proporcao
+               &lt;dbl&gt; &lt;int&gt;     &lt;dbl&gt;
+1                  0 22182      24.2
+2                  1 69341      75.8</code></pre>
+</div>
+</div>
+<ol start="2" type="a">
+<li><p><span class="math inline">\(Y_i(1)\)</span> é o peso do bebê <span class="math inline">\(i\)</span> quando a mãe realizou o pré-natal adequado (<span class="math inline">\(D_i = 1\)</span>), enquanto <span class="math inline">\(Y_i(0)\)</span> é o peso do mesmo bebê <span class="math inline">\(i\)</span> quando a mãe não realizou o pré-natal adequado (<span class="math inline">\(D_i = 0\)</span>).</p></li>
+<li><p>Não é possível observar os dois pois o contrafactual é sempre uma situação hipotética caso o indivíduo não tenha recebido o tratamento. Isso implica que não conseguimos calcular diretamente o efeito do tratamento sobre os indivíduos.</p></li>
+</ol>
+</section>
+<section id="correlação-e-visualização" class="level2">
+<h2 class="anchored" data-anchor-id="correlação-e-visualização">3. Correlação e visualização</h2>
+<ol type="a">
+<li>A correlação entre o peso ao nascer e a realização adequada do pré-natal é dada por</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>corr <span class="ot">=</span> <span class="fu">cov</span>(t_data<span class="sc">$</span>peso, t_data<span class="sc">$</span>pre_natal_adequado)<span class="sc">/</span>(<span class="fu">sd</span>(t_data<span class="sc">$</span>peso)<span class="sc">*</span><span class="fu">sd</span>(t_data<span class="sc">$</span>pre_natal_adequado))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>corr</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.133194</code></pre>
+</div>
+</div>
+<p>O valor positivo porém próximo de zero sugere que há pouca relação linear diretamente proporcional.</p>
+<ol start="2" type="a">
+<li>Essa correlação não necessariamente pode ser interpretada como causal, pois podem existir variáveis confundidoras que influenciam tanto o tratamento quanto o resultado, gerando viés. Algumas dessas variáveis podem ser idade da mãe (mães mais velhas podem ter maior estabilidade financeira e maturidade biológica), renda/escolaridade/local de moradia da mãe (podem afetar o acesso a serviços de saúde e alimentação de qualidade), etc.</li>
+</ol>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lista4_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ol start="3" type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>t_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> escolaridade_mae, <span class="at">x =</span> peso, <span class="at">fill =</span> escolaridade_mae) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>(<span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">'none'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lista4_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As medianas do peso ao nascer não variam muito em relação ao nível de escolaridade da mãe, sendo um pouco menores quando a mãe não tem nenhuma escolaridade.</p>
+</section>
+</section>
+<section id="parte-ii---comparação-observacional-e-viés-de-seleção" class="level1">
+<h1>Parte II - Comparação observacional e viés de seleção</h1>
+<section id="sdo" class="level2">
+<h2 class="anchored" data-anchor-id="sdo">4. SDO</h2>
+<ol type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>d0 <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(pre_natal_adequado <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(pre_natal_adequado <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>sdo <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0<span class="sc">$</span>peso)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>sdo</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 167.8227</code></pre>
+</div>
+</div>
+<p>O SDO representa a diferença simples da média do resultado dos tratados (média dos pesos para mães que realizaram o pré-natal adequado) menos a média do resultado dos não tratados (média dos pesos para mães que não realizaram o pré-natal adequado). Esse valor <strong>não</strong> corresponde à ATE, compara os resultados obtidos entre tratados e controle e não os resultados potenciais dos tratados.</p>
+<ol start="2" type="a">
+<li><p>O SDO pode ser uma estimativa enviesada do efeito do pré-natal sobre o peso ao nascer pois os valores de <span class="math inline">\(Y(0)\)</span> para os tratados e o controle podem ser diferentes, fazendo com que os grupos não sejam comparáveis antes do tratamento.</p></li>
+<li></li>
+</ol>
+<p><span class="math display">\[
+\begin{align}
+SDO &amp;= E[Y(1)|D=1] - E[Y(0)|D=0] \\
+SDO &amp;= \underbrace{E[Y(1)|D=1] - E[Y(0)|D=1]}_{\text{ATT}} + \underbrace{E[Y(0)|D=1] - E[Y(0)|D=0]}_{\text{Viés de seleção}}
+\end{align}
+\]</span></p>
+<p>O sinal esperado do viés nesse contexto é positivo, ou seja, o <span class="math inline">\(Y(0)\)</span> das mães que realizaram pré-natal adequado (<span class="math inline">\(D=1\)</span>) tende a ser maior que o das mães que não realizaram o pré-natal adequado. Isso se dá pelas variáveis confundidoras discutidas anteriormente em que uma mãe que realizou o pré-natal corretamente já tenderia a ter bebês com maior peso devido à possível maior renda, maior acesso a serviços de saúde, maior maturidade etc.</p>
+</section>
+<section id="investigando-o-viés-de-seleção" class="level2">
+<h2 class="anchored" data-anchor-id="investigando-o-viés-de-seleção">5. Investigando o viés de seleção</h2>
+<ol type="a">
+<li></li>
+</ol>
+<ul>
+<li>Idade das mães que fizeram pré-natal adequado:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  12.00   23.00   28.00   27.98   33.00   58.00 </code></pre>
+</div>
+</div>
+<ul>
+<li>Idade das mães que não fizeram pré-natal adequado:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  11.00   21.00   25.00   25.81   30.00   52.00 </code></pre>
+</div>
+</div>
+<ul>
+<li>Escolaridade das mães que fizeram pré-natal adequado:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   4.000   4.000   4.265   5.000   5.000 </code></pre>
+</div>
+</div>
+<ul>
+<li>Escolaridade das mães que fizeram pré-natal adequado:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   4.000   4.000   4.012   4.000   5.000 </code></pre>
+</div>
+</div>
+<p>Em termos de escolaridade, os grupos tratados e não tratados são praticamente comparáveis, não havendo muita diferença nos níveis de educação das mães que realizaram e dasque não realizaram pré-natal adequado. Talvez essa diferença fosse melhor observada se os anos de escolaridade não estivessem categorizados.</p>
+<p>Em termos de idade, porém, os grupos passam a não ser comparáveis. As mães que realizaram pré-natal adequado tendem a ser um pouco mais velhas, mostrando que mães mais maduras buscam mais por um número adequado de consultas.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_natal_adequado =</span> <span class="fu">ifelse</span>(pre_natal_adequado <span class="sc">==</span> <span class="dv">1</span>, <span class="st">'D=1'</span>, <span class="st">'D=0'</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> idade_mae, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lista4_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ol start="2" type="a">
+<li>Com base nos resultados, o viés de seleção presente é do tipo <span class="math inline">\(Y^0\)</span>: as mães tratadas, levemente mais velhas, já teriam bebês com pesos diferentes das mães não tratadas, mesmo sem realizar o número adequado de consultas. Isso pode se dar por já poderem ter uma maior estabilidade financeira, maior acesso a serviços de saúde, maior maturidade biológica, etc.</li>
+</ol>
+<p>Além disso, também podemos enxergar um viés em <span class="math inline">\(Y^1\)</span>. Mulheres mais velhas podem responder melhor ao tratamento por terem mais maturidade e aderirem melhor às orientações médicas e terem mais acesso aos suplementos vitamínicos prescritos.</p>
+<ol start="3" type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> peso, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lista4_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Como é possível analisar no gráfico, os bebês de mães tratadas (pré-natal adequado) tem o peso levemente maior que o de mães não tratadas.</p>
+</section>
+<section id="regressão-com-controles-como-alternativa" class="level2">
+<h2 class="anchored" data-anchor-id="regressão-com-controles-como-alternativa">6. Regressão com controles como alternativa</h2>
+<ol type="a">
+<li></li>
+</ol>
+<ul>
+<li>Modelo sem covariadas</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>modelo_simples <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado, <span class="at">data =</span> t_data)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simples)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = peso ~ pre_natal_adequado, data = t_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3015.9  -270.9    34.1   329.1  3566.9 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)        2983.100      3.593  830.27   &lt;2e-16 ***
+pre_natal_adequado  167.823      4.128   40.66   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 535.1 on 91521 degrees of freedom
+Multiple R-squared:  0.01774,   Adjusted R-squared:  0.01773 
+F-statistic:  1653 on 1 and 91521 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<ul>
+<li>Modelo com covariadas</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae, <span class="at">data =</span> t_data)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = peso ~ pre_natal_adequado + idade_mae + escolaridade_mae, 
+    data = t_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2993.6  -271.2    35.6   330.0  3591.1 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          2758.6961    69.1625  39.887  &lt; 2e-16 ***
+pre_natal_adequado    169.6057     4.2227  40.165  &lt; 2e-16 ***
+idade_mae               0.6808     0.2892   2.354  0.01856 *  
+escolaridade_mae1-3   180.6246    72.9379   2.476  0.01327 *  
+escolaridade_mae4-7   182.0852    68.8377   2.645  0.00817 ** 
+escolaridade_mae8-11  216.2874    68.5594   3.155  0.00161 ** 
+escolaridade_mae12+   183.9104    68.5843   2.682  0.00733 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 534.9 on 91516 degrees of freedom
+Multiple R-squared:  0.01861,   Adjusted R-squared:  0.01854 
+F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>O coeficiente de D (pré-natal adequado) muda muito pouco após incluir os controles. Isso significa que as variáveis controladas adicionam pouco viés de seleção ao efeito do tratamento.</p>
+<ol start="2" type="a">
+<li><p>Não necessariamente o coeficiente de D no modelo com controles pode ser interpretado como efeito causal do pré-natal adequado sobre o peso a nascer. Para que pudessemos fazer essa afirmação, seria necessário que controlássemos para todas as variáveis confundidoras do tratamento e do efeito.</p></li>
+<li><p>Em um RTC, estimaríamos de fato o efeito causal do tratatamento sobre o resultado, pois eliminaríamos todos os vieses causados por possíveis variáveis confundidoras ao aleatorizar os grupos e torná-los comparáveis antes do tratamento. No nosso modelo com controle de covariadas, estamos estimando a associação entre tratamento e efeito sem levar em consideração o efeito das confudidoras que controlamos. Os dois seriam iguais caso fosse possível controlar por todas as confundidoras.</p></li>
+</ol>
+</section>
+</section>
+<section id="parte-iii---simulando-a-aleatorização" class="level1">
+<h1>Parte III - Simulando a Aleatorização</h1>
+<section id="atribuição-aleatória-de-tratamento" class="level2">
+<h2 class="anchored" data-anchor-id="atribuição-aleatória-de-tratamento">7. Atribuição aleatória de tratamento</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>t_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">tratamento_aleatorio =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>d0_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>d1_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>sdo_a <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_a<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_a<span class="sc">$</span>peso)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>sdo_a</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -3.059442</code></pre>
+</div>
+</div>
+<p>a . O SDO com tratamento aleatório difere muito do SDO observado, sendo muito menor. Essa diferença pode nos dizer que o tratamento aleatorizado tem quase nenhum impacto causal no resultado (peso do bebê).</p>
+<ol start="2" type="a">
+<li></li>
+</ol>
+<ul>
+<li>Idade das mães que fizeram pré-natal adequado:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   11.0    22.0    27.0    27.4    32.0    52.0 </code></pre>
+</div>
+</div>
+<ul>
+<li>Idade das mães que não fizeram pré-natal adequado:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   11.0    22.0    27.0    27.5    32.0    58.0 </code></pre>
+</div>
+</div>
+<ul>
+<li>Escolaridade das mães que fizeram pré-natal adequado:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   4.000   4.000   4.204   5.000   5.000 </code></pre>
+</div>
+</div>
+<ul>
+<li>Escolaridade das mães que fizeram pré-natal adequado:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   4.000   4.000   4.203   5.000   5.000 </code></pre>
+</div>
+</div>
+<p>Os grupos estão bastante equilibrados agora, pois as amostras foram feitas aleatoriamente.</p>
+<ol start="3" type="a">
+<li>O SDO aleatorizado não é uma estimativa causal válida, pois, apesar do tratamento ter sido atribuído aleatoriamente, os pesos dos bebês são observados e não tem relação com o tratamento.</li>
+</ol>
+</section>
+<section id="distribuição-do-estimador-sob-aleatorização" class="level2">
+<h2 class="anchored" data-anchor-id="distribuição-do-estimador-sob-aleatorização">8. Distribuição do estimador sob aleatorização</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sdos <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  data_aux <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">tratamento_aleatorio_s =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  d0_aux <span class="ot">&lt;-</span> data_aux <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio_s <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  d1_aux <span class="ot">&lt;-</span> data_aux <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio_s <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  sdo_aux <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_aux<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_aux<span class="sc">$</span>peso)</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  sdos <span class="ot">&lt;-</span> <span class="fu">c</span>(sdos, sdo_aux)</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sdos)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+-11.01558  -2.29821   0.08724   0.07218   2.42098  11.30609 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sdos)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>sdos) <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lista4_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ol type="a">
+<li><p>A distribuição do SDO aleatorizado se concentra em torno do zero. Isso é coerente com a teoria, pois o tratamento aleatório não tem correlação e nem efeito causal sobre o peso do bebê ao nascer.</p></li>
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>desvio <span class="ot">&lt;-</span> <span class="fu">sd</span>(sdos, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>desvio</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.464297</code></pre>
+</div>
+</div>
+<p>O desvio está na mesma ordem de grandeza do erro padrão do coeficiente estimado na regressão.</p>
+<ol start="3" type="a">
+<li></li>
+</ol>
+</section>
+<section id="inferência-causal-regressão-no-contexto-de-um-rtc-simulado" class="level2">
+<h2 class="anchored" data-anchor-id="inferência-causal-regressão-no-contexto-de-um-rtc-simulado">9. Inferência causal: regressão no contexto de um RTC simulado</h2>
+<ol type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>modelo_simples_a <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> tratamento_aleatorio, <span class="at">data =</span> t_data)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simples_a)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = peso ~ tratamento_aleatorio, data = t_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2976.8  -266.8    38.2   333.2  3438.2 
+
+Coefficients:
+                     Estimate Std. Error  t value Pr(&gt;|t|)    
+(Intercept)          3111.771      2.519 1235.546   &lt;2e-16 ***
+tratamento_aleatorio   -3.059      3.569   -0.857    0.391    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 539.9 on 91521 degrees of freedom
+Multiple R-squared:  8.027e-06, Adjusted R-squared:  -2.899e-06 
+F-statistic: 0.7346 on 1 and 91521 DF,  p-value: 0.3914</code></pre>
+</div>
+</div>
+<p>O coeficiente de D não é estatisticamente significativo (<span class="math inline">\(p &gt; 0.05\)</span>). Isso indica que nessa simulação, não há efeito causal e nem correlação.</p>
+<ol start="2" type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada_a <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> tratamento_aleatorio <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae, <span class="at">data =</span> t_data)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada_a)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = peso ~ tratamento_aleatorio + idade_mae + escolaridade_mae, 
+    data = t_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2965.7  -267.6    39.5   332.1  3449.5 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          2815.7808    69.7749  40.355  &lt; 2e-16 ***
+tratamento_aleatorio   -2.8794     3.5674  -0.807 0.419589    
+idade_mae               1.8479     0.2902   6.367 1.94e-10 ***
+escolaridade_mae1-3   187.2711    73.5776   2.545 0.010923 *  
+escolaridade_mae4-7   194.8636    69.4410   2.806 0.005014 ** 
+escolaridade_mae8-11  253.4964    69.1548   3.666 0.000247 ***
+escolaridade_mae12+   240.3217    69.1718   3.474 0.000512 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 539.6 on 91516 degrees of freedom
+Multiple R-squared:  0.001314,  Adjusted R-squared:  0.001248 
+F-statistic: 20.06 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Os erros padrão de D nos dois modelos permaneceu a mesma, ou seja, incluir as covariadas não melhorou a precisão da estimativa. Isso acontece pois em um RTC, os efeitos da covariadas já são levadas em consideração.</p>
+<ol start="3" type="a">
+<li></li>
+</ol>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,341 @@
+---
+title: "Resolução da lista 4"
+subtitle: "Curso de inferência causal"
+author: "Camila Brito"
+format: html
+lang: pt
+execute:
+    warning: false
+---
+
+
+```{r}
+# carregando os pacotes
+library(microdatasus) 
+library(dplyr) 
+library(ggplot2)
+
+# lendo os dados
+data <- fetch_datasus(
+    year_start = 2023, month_start = 1, year_end = 2023, month_end = 12, 
+    information_system = "SINASC", uf = "GO"
+)
+```
+
+# Parte I - Preparação dos dados e correlações
+
+## 1. Preparação dos dados
+
+Seleção das colunas necessárias, de acordo com a [referência](https://rfsaldanha.github.io/sis/assets/sinasc/Estrutura_SINASC_para_CD.pdf).
+
+```{r}
+s_data <- data |>
+  select(PESO, IDADEMAE, ESCMAE, CONSULTAS, PARTO) |>
+  mutate(
+    peso = as.numeric(PESO),
+    idade_mae = as.numeric(IDADEMAE),
+    escolaridade_mae_numerico = as.numeric(ESCMAE),
+    escolaridade_mae = factor(
+      ESCMAE,
+      levels = c('1', '2', '3', '4', '5', '9'),
+      labels = c('Nenhuma', '1-3', '4-7', '8-11','12+', 'ignorado'),
+      # ordered = TRUE  
+    ),
+    consultas = as.numeric(CONSULTAS),
+    consultas_factor = factor(
+      CONSULTAS,
+      levels = c('1', '2', '3', '4', '9'),
+      labels = c('Nenhuma', '1-3', '4-6', '7+', 'ignorado'),
+      ordered = TRUE
+    ),
+    parto = factor(
+        PARTO,
+        levels = c('1', '2', '9'),
+        labels = c('vaginal', 'cesareo', 'ignorado')
+    )
+  ) |>
+  select(peso, idade_mae, escolaridade_mae_numerico, escolaridade_mae, consultas, consultas_factor, parto) |>
+  na.omit() |>
+  # removendo as colunas marcadas como 'ignorado'
+  filter(consultas != 9 & escolaridade_mae != 'ignorado' & parto != 'ignorado')
+
+summary(s_data)
+```
+
+## 2. Identificando as variáveis no framework causal
+
+Definindo o tratamento $D_i$ como o número adequado de consultas pré-natal (masi de 7 consultas).
+
+```{r}
+# Criação da variável de tratamento
+t_data <- s_data |>
+    mutate(
+        pre_natal_adequado = ifelse(consultas == 4, 1, 0)
+    )
+```
+
+a. A proporção de bebês cujas mães realizaram o pré-natal adequado é dado por
+
+
+```{r}
+t_data |> group_by(pre_natal_adequado) |> summarise(n = n(), proporcao = 100*(n/nrow(t_data)))
+```
+
+b. $Y_i(1)$ é o peso do bebê $i$ quando a mãe realizou o pré-natal adequado ($D_i = 1$), enquanto $Y_i(0)$ é o peso do mesmo bebê $i$ quando a mãe não realizou o pré-natal adequado ($D_i = 0$). 
+
+c. Não é possível observar os dois pois o contrafactual é sempre uma situação hipotética caso o indivíduo não tenha recebido o tratamento. Isso implica que não conseguimos calcular diretamente o efeito do tratamento sobre os indivíduos.
+
+## 3. Correlação e visualização
+
+a. A correlação entre o peso ao nascer e a realização adequada do pré-natal é dada por
+
+```{r}
+corr = cov(t_data$peso, t_data$pre_natal_adequado)/(sd(t_data$peso)*sd(t_data$pre_natal_adequado))
+corr
+```
+
+O valor positivo porém próximo de zero sugere que há pouca relação linear diretamente proporcional.
+
+b. Essa correlação não necessariamente pode ser interpretada como causal, pois podem existir variáveis confundidoras que influenciam tanto o tratamento quanto o resultado, gerando viés. Algumas dessas variáveis podem ser idade da mãe (mães mais velhas podem ter maior estabilidade financeira e maturidade biológica), renda/escolaridade/local de moradia da mãe (podem afetar o acesso a serviços de saúde e alimentação de qualidade), etc.
+
+```{r}
+#| echo: false
+library(ggdag)
+dag <- ggdag::dagify(
+    peso  ~ consultas + idade + escolaridade,
+    consultas ~ idade + escolaridade + estabilidadeFinanceira,
+    estabilidadeFinanceira ~ idade + escolaridade,
+    coords = time_ordered_coords()
+)
+
+ggdag::ggdag(dag, text_col = 'grey', node_size = 20) + ggdag::theme_dag_blank()
+```
+c. 
+
+```{r}
+t_data |> ggplot() +
+    aes(y = escolaridade_mae, x = peso, fill = escolaridade_mae) +
+    geom_boxplot(alpha=0.3) +
+    theme(legend.position='none')
+```
+
+As medianas do peso ao nascer não variam muito em relação ao nível de escolaridade da mãe, sendo um pouco menores quando a mãe não tem nenhuma escolaridade.
+
+# Parte II - Comparação observacional e viés de seleção
+
+## 4. SDO
+
+a.
+
+```{r}
+
+d0 <- t_data |> filter(pre_natal_adequado == 0)
+d1 <- t_data |> filter(pre_natal_adequado == 1)
+
+sdo <- mean(d1$peso) - mean(d0$peso)
+sdo
+```
+
+O SDO representa a diferença simples da média do resultado dos tratados (média dos pesos para mães que realizaram o pré-natal adequado) menos a média do resultado dos não tratados (média dos pesos para mães que não realizaram o pré-natal adequado). Esse valor **não** corresponde à ATE, compara os resultados obtidos entre tratados e controle e não os resultados potenciais dos tratados.
+
+b. O SDO pode ser uma estimativa enviesada do efeito do pré-natal sobre o peso ao nascer pois os valores de $Y(0)$ para os tratados e o controle podem ser diferentes, fazendo com que os grupos não sejam comparáveis antes do tratamento.
+
+c. 
+
+$$
+\begin{align}
+SDO &= E[Y(1)|D=1] - E[Y(0)|D=0] \\
+SDO &= \underbrace{E[Y(1)|D=1] - E[Y(0)|D=1]}_{\text{ATT}} + \underbrace{E[Y(0)|D=1] - E[Y(0)|D=0]}_{\text{Viés de seleção}}
+\end{align}
+$$
+
+O sinal esperado do viés nesse contexto é positivo, ou seja, o $Y(0)$ das mães que realizaram pré-natal adequado ($D=1$) tende a ser maior que o das mães que não realizaram o pré-natal adequado. Isso se dá pelas variáveis confundidoras discutidas anteriormente em que uma mãe que realizou o pré-natal corretamente já tenderia a ter bebês com maior peso devido à possível maior renda, maior acesso a serviços de saúde, maior maturidade etc.
+
+## 5. Investigando o viés de seleção
+
+a. 
+
+- Idade das mães que fizeram pré-natal adequado:
+
+```{r}
+summary(d1$idade_mae)
+```
+
+- Idade das mães que não fizeram pré-natal adequado:
+
+```{r}
+summary(d0$idade_mae)
+```
+
+- Escolaridade das mães que fizeram pré-natal adequado:
+
+```{r}
+summary(d1$escolaridade_mae_numerico)
+```
+
+- Escolaridade das mães que fizeram pré-natal adequado:
+
+```{r}
+summary(d0$escolaridade_mae_numerico)
+```
+
+Em termos de escolaridade, os grupos tratados e não tratados são praticamente comparáveis, não havendo muita diferença nos níveis de educação das mães que realizaram e dasque não realizaram pré-natal adequado. Talvez essa diferença fosse melhor observada se os anos de escolaridade não estivessem categorizados.
+
+Em termos de idade, porém, os grupos passam a não ser comparáveis. As mães que realizaram pré-natal adequado tendem a ser um pouco mais velhas, mostrando que mães mais maduras buscam mais por um número adequado de consultas.
+
+```{r}
+aux_data <- t_data |> 
+  mutate(
+    pre_natal_adequado = ifelse(pre_natal_adequado == 1, 'D=1', 'D=0')
+  )
+
+aux_data |> ggplot() +
+  aes(x = idade_mae, fill = pre_natal_adequado) +
+  geom_density(alpha = 0.3)
+```
+
+b. Com base nos resultados, o viés de seleção presente é do tipo $Y^0$: as mães tratadas, levemente mais velhas, já teriam bebês com pesos diferentes das mães não tratadas, mesmo sem realizar o número adequado de consultas. Isso pode se dar por já poderem ter uma maior estabilidade financeira, maior acesso a serviços de saúde, maior maturidade biológica, etc.
+
+Além disso, também podemos enxergar um viés em $Y^1$. Mulheres mais velhas podem responder melhor ao tratamento por terem mais maturidade e aderirem melhor às orientações médicas e terem mais acesso aos suplementos vitamínicos prescritos. 
+
+c.
+
+```{r}
+aux_data |> ggplot() +
+  aes(x = peso, fill = pre_natal_adequado) +
+  geom_density(alpha = 0.3)
+```
+
+Como é possível analisar no gráfico, os bebês de mães tratadas (pré-natal adequado) tem o peso levemente maior que o de mães não tratadas.
+
+## 6. Regressão com controles como alternativa
+
+a.
+
+- Modelo sem covariadas
+```{r}
+modelo_simples <- lm(peso ~ pre_natal_adequado, data = t_data)
+summary(modelo_simples)
+```
+
+- Modelo com covariadas
+```{r}
+modelo_covariada <- lm(peso ~ pre_natal_adequado + idade_mae + escolaridade_mae, data = t_data)
+summary(modelo_covariada)
+```
+
+O coeficiente de D (pré-natal adequado) muda muito pouco após incluir os controles. Isso significa que as variáveis controladas adicionam pouco viés de seleção ao efeito do tratamento. 
+
+b. Não necessariamente o coeficiente de D no modelo com controles pode ser interpretado como efeito causal do pré-natal adequado sobre o peso a nascer. Para que pudessemos fazer essa afirmação, seria necessário que controlássemos para todas as variáveis confundidoras do tratamento e do efeito.
+
+c. Em um RTC, estimaríamos de fato o efeito causal do tratatamento sobre o resultado, pois eliminaríamos todos os vieses causados por possíveis variáveis confundidoras ao aleatorizar os grupos e torná-los comparáveis antes do tratamento. No nosso modelo com controle de covariadas, estamos estimando a associação entre tratamento e efeito sem levar em consideração o efeito das confudidoras que controlamos. Os dois seriam iguais caso fosse possível controlar por todas as confundidoras.
+
+
+# Parte III - Simulando a Aleatorização
+
+## 7. Atribuição aleatória de tratamento
+
+```{r}
+t_data <- t_data |>
+  mutate(
+    tratamento_aleatorio = sample(c(0, 1), size = n(), replace = TRUE)
+  )
+
+d0_a <- t_data |> filter(tratamento_aleatorio == 0)
+d1_a <- t_data |> filter(tratamento_aleatorio == 1)
+
+sdo_a <- mean(d1_a$peso) - mean(d0_a$peso)
+sdo_a
+```
+
+a . O SDO com tratamento aleatório difere muito do SDO observado, sendo muito menor. Essa diferença pode nos dizer que o tratamento aleatorizado tem quase nenhum impacto causal no resultado (peso do bebê).
+
+b. 
+
+- Idade das mães que fizeram pré-natal adequado:
+
+```{r}
+summary(d1_a$idade_mae)
+```
+
+- Idade das mães que não fizeram pré-natal adequado:
+
+```{r}
+summary(d0_a$idade_mae)
+```
+
+- Escolaridade das mães que fizeram pré-natal adequado:
+
+```{r}
+summary(d1_a$escolaridade_mae_numerico)
+```
+
+- Escolaridade das mães que fizeram pré-natal adequado:
+
+```{r}
+summary(d0_a$escolaridade_mae_numerico)
+```
+
+Os grupos estão bastante equilibrados agora, pois as amostras foram feitas aleatoriamente.
+
+c. O SDO aleatorizado não é uma estimativa causal válida, pois, apesar do tratamento ter sido atribuído aleatoriamente, os pesos dos bebês são observados e não tem relação com o tratamento.
+
+## 8. Distribuição do estimador sob aleatorização
+
+```{r}
+sdos = c()
+
+for (i in 1:1000){
+
+  data_aux <- t_data |>
+  mutate(
+    tratamento_aleatorio_s = sample(c(0, 1), size = n(), replace = TRUE)
+  )
+
+  d0_aux <- data_aux |> filter(tratamento_aleatorio_s == 0)
+  d1_aux <- data_aux |> filter(tratamento_aleatorio_s == 1)
+
+  sdo_aux <- mean(d1_aux$peso) - mean(d0_aux$peso)
+  sdos <- c(sdos, sdo_aux)
+}
+
+summary(sdos)
+
+df_sdos <- data.frame(sdos)
+df_sdos |> ggplot() + aes(x=sdos) + geom_density()
+```
+
+a. A distribuição do SDO aleatorizado se concentra em torno do zero. Isso é coerente com a teoria, pois o tratamento aleatório não tem correlação e nem efeito causal sobre o peso do bebê ao nascer.
+
+b. 
+
+```{r}
+desvio <- sd(sdos, na.rm = TRUE)
+desvio
+```
+
+O desvio está na mesma ordem de grandeza do erro padrão do coeficiente estimado na regressão.
+
+c. 
+
+## 9. Inferência causal: regressão no contexto de um RTC simulado
+
+a. 
+
+```{r}
+modelo_simples_a <- lm(peso ~ tratamento_aleatorio, data = t_data)
+summary(modelo_simples_a)
+```
+
+O coeficiente de D não é estatisticamente significativo ($p > 0.05$). Isso indica que nessa simulação, não há efeito causal e nem correlação.
+
+b.
+
+```{r}
+modelo_covariada_a <- lm(peso ~ tratamento_aleatorio + idade_mae + escolaridade_mae, data = t_data)
+summary(modelo_covariada_a)
+```
+
+Os erros padrão de D nos dois modelos permaneceu a mesma, ou seja, incluir as covariadas não melhorou a precisão da estimativa. Isso acontece pois em um RTC, os efeitos da covariadas já são levadas em consideração.
+
+c. 
