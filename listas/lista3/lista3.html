@@ -113,7 +113,7 @@ window.Quarto = {
 \]</span></p>
 <p>e possui as seguintes propriedades:</p>
 <ul>
-<li>o valor de <span class="math inline">\(\text{corr}(X, Y)\)</span> está sempre entre -1 e 1;</li>
+<li>o valor de <span class="math inline">\(\text{corr}(X, Y)\)</span> está sempre entre -1 e 1 (normalizada);</li>
 <li><span class="math inline">\(\text{corr}(X, Y) = \pm 1\)</span> quando X e Y tem uma perfeita relação linear positiva ou negativa; e</li>
 <li><span class="math inline">\(\text{corr}(X, Y) = 0\)</span> sugere que não há relação linear entre X e Y.</li>
 </ul>
@@ -130,7 +130,7 @@ window.Quarto = {
 </div>
 </div>
 <ol start="3" type="a">
-<li>A presença de variáveis de confusão impede a interpretação causal de uma correlação observada por criar outros caminhos entre o tratamento e resultado, o que gera um <strong>viés</strong>. Para isolar o efeito causal, é necessário bloquear ou cortar a relação entre a variável confundidora e o tratamento. No caso do exemplo, controlar o calor para que reste apenas o efeito de tomar sorvete sobre afogamentos.</li>
+<li>A presença de variáveis de confusão impede a interpretação causal de uma correlação observada por criar outros caminhos entre o tratamento e resultado, o que gera um <strong>viés</strong>. Para isolar o efeito causal, é necessário bloquear ou cortar a relação entre a variável confundidora e o tratamento. No caso do exemplo, podemos controlar o calor para que reste apenas o efeito de tomar sorvete sobre afogamentos ou então aleatorizar o tratamento (tomar sorvete).</li>
 </ol>
 </section>
 <section id="framework-de-resultados-potenciais" class="level2">
@@ -153,7 +153,7 @@ Y_i(0), se D_i = 0
 <section id="parâmetros-de-interesse-ate-att-e-atu" class="level2">
 <h2 class="anchored" data-anchor-id="parâmetros-de-interesse-ate-att-e-atu">3. Parâmetros de interesse: ATE, ATT e ATU</h2>
 <ol type="a">
-<li>As definições são dados por</li>
+<li>As definições são dadas por</li>
 </ol>
 <p><span class="math display">\[
 ATE = E[Y_i(1) - Y_i(0)] = E[Y_i(1)] - E[Y_i(0)]
@@ -162,9 +162,75 @@ ATT = E[Y_i(1) - Y_i(0)| D_i = 1] = E[Y_i(1)| D_i = 1] - E[Y_i(0)| D_i = 1]
 \]</span> <span class="math display">\[
 ATU = E[Y_i(1) - Y_i(0)| D_i = 0] = E[Y_i(1)| D_i = 0] - E[Y_i(0)| D_i = 0]
 \]</span></p>
-<p>O ATE é o efeito calculado em toada a população, ATT é o efeito calculado apenas nos tratados e o ATU é o efeito calculado apenas nos não tratados.</p>
+<p>O ATE é o efeito calculado em toda a população, ATT é o efeito calculado apenas nos tratados e o ATU é o efeito calculado apenas nos não tratados.</p>
 <ol start="2" type="a">
 <li></li>
+</ol>
+<p><span class="math display">\[\begin{align*}
+ATE &amp;= E[Y_i(1) - Y_i(0)] \\
+    &amp;= p * E[Y(1) - Y(0)|D = 1] + (1 - p) * E[Y(1) - Y(0)|D = 0] \\
+    &amp;= p * ATT + (1 - p) * ATU
+\end{align*}\]</span></p>
+<ol start="3" type="a">
+<li><p>ATE = ATT = ATU quando o tratamento é aleatorizado. Nesse contexto, a aleatorização garante a independência dos resultados potenciais do tratamento (<span class="math inline">\((Y(0), Y(1)) \perp D\)</span>), tornando os grupos de tratamento e de controle comparáveis e eliminando os vieses.</p></li>
+<li><p><span class="math inline">\(D_i\)</span> seria a participação da família no HISP (1 se a família aderiu e 0 se não aderiu ao programa). <span class="math inline">\(Y_i\)</span> seria as despesas anuais per capita da família com saúde. O ATE mediria quanto, em média, a adesão ao HISP reduziria os gastos anuais com saúde para qualquer família da população, caso o teste fosse aplicado aleatoriamente.</p></li>
+</ol>
+</section>
+<section id="viés-de-seleção-e-o-desafio-do-contrafactual" class="level2">
+<h2 class="anchored" data-anchor-id="viés-de-seleção-e-o-desafio-do-contrafactual">4. Viés de seleção e o desafio do contrafactual</h2>
+<ol type="a">
+<li></li>
+</ol>
+<p><span class="math display">\[\begin{align*}
+SDO &amp;= E[Y(1)|D=1] - E[Y(0)|D=0] \\
+SDO &amp;= \underbrace{E[Y(1)|D=1] - E[Y(0)|D=1]}_{\text{ATT}} + \underbrace{E[Y(0)|D=1] - E[Y(0)|D=0]}_{\text{Viés de seleção}}
+\end{align*}\]</span></p>
+<ol start="2" type="a">
+<li><p>O viés de seleção representa a diferença entre o grupo de tratamento e o grupo de controle em características que afetam o resultado, mesmo sem o tratamento. Quando <span class="math inline">\(E[Y(0)|D=1]\)</span> e <span class="math inline">\(E[Y(0)|D=0]\)</span> são diferentes, significa que os grupos não são comparáveis antes do tratamento e teriam resultados diferentes mesmo sem o tratamento. Ele surge quando indivíduos se auto selecionam para o tratamento pois a auto seleção é guiada por características do indivíduo que também afetam o resultado <span class="math inline">\(Y\)</span>.</p></li>
+<li></li>
+</ol>
+<ul>
+<li>Viés de seleção em <span class="math inline">\(Y^0\)</span>: acontece quando a escolha do tratamento está relacionada à <span class="math inline">\(Y(0)\)</span> (o que acontece sem o tratamento), ou seja, quando o grupo de tratamento e de controle já diferem no ponto de partida, mesmo sem o tratamento.
+<ul>
+<li>Um exemplo pode ser um curso de capacitação para aumento de salário. O grupo de tratamento pode ser formado por pessoas que já ganhavam pouco.</li>
+</ul></li>
+<li>Viés de seleção em <span class="math inline">\(Y^1\)</span>: acontece quando a escolha do tratamento está relacionada à <span class="math inline">\(Y(1)\)</span> (o que acontece em resposta ao tratamento), ou seja, quem participa do tratamento tem resultados melhores ao tratamento.
+<ul>
+<li>Um exemplo pode ser uma bolsa de estudos oferecida a alunos que tiram boas notas. Os alunos que já são bons terão resultados ainda melhores com a bolsa</li>
+</ul></li>
+<li>Viés de seleção nos ganhos (<span class="math inline">\(Y^1 - Y^0\)</span>): acontece quando a escolha do tratamento está relacionada aos ganhos individuais (<span class="math inline">\(Y^1 - Y^0\)</span>), ou seja, quem participa do tratamento são os indivíduos que se beneficiam do tratamento (ganho positivo).</li>
+</ul>
+<ol start="4" type="a">
+<li>No contexto do HISP, a adesão ao programa por famílias mais preocupadas com saúde representa um viés de seleção em <span class="math inline">\(Y^0\)</span>, pois essas famílias já teriam gastos reduzidos com saúde mesmo sem o tratamento (maior atenção a prevenção). O viés tem sinal negativo (<span class="math inline">\(E[Y(0)|D=1] &lt; E[Y(0)|D=0]\)</span>), superestimando a redução nos gastos.</li>
+</ol>
+</section>
+</section>
+<section id="seção-ii---exercícios-aplicados" class="level1">
+<h1>Seção II - Exercícios aplicados</h1>
+<section id="aplicação-da-notação-de-resultados-potenciais" class="level2">
+<h2 class="anchored" data-anchor-id="aplicação-da-notação-de-resultados-potenciais">5. Aplicação da notação de resultados potenciais</h2>
+<ol type="a">
+<li><p>O tratamento <span class="math inline">\(D_i = 1\)</span>, caso a família participe do programa e <span class="math inline">\(D_i = 0\)</span> caso contrário. <span class="math inline">\(Y_i\)</span> é o resultado, ou seja, o percentual de dias letivos que a criança da família <span class="math inline">\(i\)</span> frequentou a escola. <span class="math inline">\(Y_i(1)\)</span> é a frequência escolar da criança que participou do programa e <span class="math inline">\(Y_i(0)\)</span> é seu contrafactual, a frequencia escolar caso essa mesma criança não tivesse participado do programa.</p></li>
+<li><p>O efeito causal individual para uma criança específica seria a diferença dos resultados potenciais <span class="math inline">\(Y_i(1) - Y_i(0)\)</span>. Não podemos calcularesse valor na prática pois nunca podemos observar o contrafactual.</p></li>
+<li><p>O contrafactual seria a frequência escolar da criança que participou do programa, caso não tivesse participado. Não conseguimos observar qual teria sido a frequencia escolar da criança participante do programa que compareceu em 92% dos dia letivos, caso ela não tivesse participado do programa.</p></li>
+<li><p>O ATE mediria o efeito do programa sobre toda a população, ou seja, quanto o programa aumenta a frequencia escolar para todos. Caso esse efeito fosse positivo e estatisticamente significativo, um formulador de políticas públicas teria evidências de que o programa causa o aumento da frequencia escolar e poderia expandí-lo para o restante da população.</p></li>
+</ol>
+</section>
+<section id="sdo-ate-e-vié-em-dados-observacionais" class="level2">
+<h2 class="anchored" data-anchor-id="sdo-ate-e-vié-em-dados-observacionais">6. SDO, ATE e vié em dados observacionais</h2>
+<ol type="a">
+<li><p>O valor de R$ 450 observado corresponde ao SDO, pois é a diferença simples do salário dos que participaram do curso (<span class="math inline">\(E[Y(1)|D=1]\)</span>) dos que não participaram (<span class="math inline">\(E[Y(0)|D=0]\)</span>).</p></li>
+<li><p>A auto seleção gera viés nesse cenário: dado que o SDO foi positivo, podemos argumentar que quem decide fazer o curso já tende a ser mais escolarizado, motivado e ambicioso e teria salários melhores mesmo sem o curso. Nesse caso, <span class="math inline">\(E[Y(0)|D=1] &gt; E[Y(0)|D=0]\)</span> e o viés tem sinal positivo, ou seja, o resultado observado é superestimado em relação ao verdadeiro valor do efeito causal.</p></li>
+<li><p>Para que o coeficiente do curso seja uma estimativa do efeito causal é necessário que não exista nenhuma outra variável confundidora, ou seja, que não haja nenhuma outra variável fora escolaridade e experiência prévia que afete tanto o salário quanto a participação no curso, tornando os grupos de tratamento e controle comparáveis antes do curso. O coeficiente de R$ 280 é menos enviesado mas ainda pode ser enviesado.</p></li>
+</ol>
+</section>
+<section id="aleatorização-como-solução-para-o-viés-de-seleção" class="level2">
+<h2 class="anchored" data-anchor-id="aleatorização-como-solução-para-o-viés-de-seleção">7. Aleatorização como solução para o viés de seleção</h2>
+<ol type="a">
+<li><p>A aleatorização preconiza que <span class="math inline">\((Y(0), Y(1)) \perp D\)</span>, ou seja, os resultados potenciais não dependem do tratamento (qual grupo o indivíduo participa), o tratamento foi atribuído por sorteio, independente de qualquer outra característica.</p></li>
+<li><p>A hipótese de independência diz que <span class="math inline">\(E[Y(0)|D=1] = E[Y(0)|D=0] = E[Y(0)]\)</span> e <span class="math inline">\(E[Y(1)|D=1] = E[Y(1)|D=0] = E[Y(1)]\)</span>, tornando os grupos de tratamento e controle comparáveis e zerando o viés de seleção.</p></li>
+<li><p>A aleatorização bloqueia o caminho entre as variáveis de confusão e o tratamento, fazendo com que o efeito causal do tratamento no resultado fique isolado.</p></li>
+<li><p>Mesmo em um experimento aleatório, pode ser útil incluir covariáveis que são bons preditores da variável dependente Y na regressão para diminuir a variância do erro da estimativa, melhorando sua precisão. Além disso, caso a aleatorização ocorra de forma condicional a alguma variável (estratificada) , é importante incluí-las na regressão.</p></li>
 </ol>
 </section>
 </section>

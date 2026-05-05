@@ -478,7 +478,7 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>sdo_a <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_a<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_a<span class="sc">$</span>peso)</span>
 <span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>sdo_a</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -3.059442</code></pre>
+<pre><code>[1] -3.545317</code></pre>
 </div>
 </div>
 <p>a . O SDO com tratamento aleatório difere muito do SDO observado, sendo muito menor. Essa diferença pode nos dizer que o tratamento aleatorizado tem quase nenhum impacto causal no resultado (peso do bebê).</p>
@@ -492,7 +492,7 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   11.0    22.0    27.0    27.4    32.0    52.0 </code></pre>
+  11.00   22.00   27.00   27.48   32.00   58.00 </code></pre>
 </div>
 </div>
 <ul>
@@ -502,7 +502,7 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   11.0    22.0    27.0    27.5    32.0    58.0 </code></pre>
+  11.00   22.00   27.00   27.43   32.00   52.00 </code></pre>
 </div>
 </div>
 <ul>
@@ -512,7 +512,7 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   4.000   4.000   4.204   5.000   5.000 </code></pre>
+  1.000   4.000   4.000   4.206   5.000   5.000 </code></pre>
 </div>
 </div>
 <ul>
@@ -522,7 +522,7 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   4.000   4.000   4.203   5.000   5.000 </code></pre>
+  1.000   4.000   4.000   4.202   5.000   5.000 </code></pre>
 </div>
 </div>
 <p>Os grupos estão bastante equilibrados agora, pois as amostras foram feitas aleatoriamente.</p>
@@ -551,8 +551,8 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sdos)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
--11.01558  -2.29821   0.08724   0.07218   2.42098  11.30609 </code></pre>
+<pre><code>      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+-10.188553  -2.510698   0.066817  -0.006808   2.389735  10.752087 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sdos)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>sdos) <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
@@ -572,7 +572,7 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>desvio <span class="ot">&lt;-</span> <span class="fu">sd</span>(sdos, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>desvio</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.464297</code></pre>
+<pre><code>[1] 3.409273</code></pre>
 </div>
 </div>
 <p>O desvio está na mesma ordem de grandeza do erro padrão do coeficiente estimado na regressão.</p>
@@ -594,19 +594,19 @@ Call:
 lm(formula = peso ~ tratamento_aleatorio, data = t_data)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--2976.8  -266.8    38.2   333.2  3438.2 
+   Min     1Q Median     3Q    Max 
+ -2977   -267     38    333   3442 
 
 Coefficients:
                      Estimate Std. Error  t value Pr(&gt;|t|)    
-(Intercept)          3111.771      2.519 1235.546   &lt;2e-16 ***
-tratamento_aleatorio   -3.059      3.569   -0.857    0.391    
+(Intercept)          3112.017      2.521 1234.394   &lt;2e-16 ***
+tratamento_aleatorio   -3.545      3.569   -0.993    0.321    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 539.9 on 91521 degrees of freedom
-Multiple R-squared:  8.027e-06, Adjusted R-squared:  -2.899e-06 
-F-statistic: 0.7346 on 1 and 91521 DF,  p-value: 0.3914</code></pre>
+Multiple R-squared:  1.078e-05, Adjusted R-squared:  -1.472e-07 
+F-statistic: 0.9865 on 1 and 91521 DF,  p-value: 0.3206</code></pre>
 </div>
 </div>
 <p>O coeficiente de D não é estatisticamente significativo (<span class="math inline">\(p &gt; 0.05\)</span>). Isso indica que nessa simulação, não há efeito causal e nem correlação.</p>
@@ -624,23 +624,23 @@ lm(formula = peso ~ tratamento_aleatorio + idade_mae + escolaridade_mae,
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--2965.7  -267.6    39.5   332.1  3449.5 
+-2966.1  -267.2    39.5   332.2  3452.8 
 
 Coefficients:
                       Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)          2815.7808    69.7749  40.355  &lt; 2e-16 ***
-tratamento_aleatorio   -2.8794     3.5674  -0.807 0.419589    
-idade_mae               1.8479     0.2902   6.367 1.94e-10 ***
-escolaridade_mae1-3   187.2711    73.5776   2.545 0.010923 *  
-escolaridade_mae4-7   194.8636    69.4410   2.806 0.005014 ** 
-escolaridade_mae8-11  253.4964    69.1548   3.666 0.000247 ***
-escolaridade_mae12+   240.3217    69.1718   3.474 0.000512 ***
+(Intercept)          2816.3295    69.7792  40.361  &lt; 2e-16 ***
+tratamento_aleatorio   -3.6673     3.5672  -1.028 0.303925    
+idade_mae               1.8509     0.2902   6.377 1.81e-10 ***
+escolaridade_mae1-3   187.0052    73.5775   2.542 0.011036 *  
+escolaridade_mae4-7   194.6099    69.4407   2.803 0.005071 ** 
+escolaridade_mae8-11  253.2632    69.1544   3.662 0.000250 ***
+escolaridade_mae12+   240.0839    69.1714   3.471 0.000519 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 539.6 on 91516 degrees of freedom
-Multiple R-squared:  0.001314,  Adjusted R-squared:  0.001248 
-F-statistic: 20.06 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
+Multiple R-squared:  0.001318,  Adjusted R-squared:  0.001253 
+F-statistic: 20.13 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p>Os erros padrão de D nos dois modelos permaneceu a mesma, ou seja, incluir as covariadas não melhorou a precisão da estimativa. Isso acontece pois em um RTC, os efeitos da covariadas já são levadas em consideração.</p>
