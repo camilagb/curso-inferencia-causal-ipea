@@ -152,10 +152,10 @@ window.Quarto = {
 <h1>Parte I - Preparação dos dados e correlações</h1>
 <section id="preparação-dos-dados" class="level2">
 <h2 class="anchored" data-anchor-id="preparação-dos-dados">1. Preparação dos dados</h2>
-<p>Seleção das colunas necessárias, de acordo com a <a href="https://rfsaldanha.github.io/sis/assets/sinasc/Estrutura_SINASC_para_CD.pdf">referência</a>.</p>
+<p>Seleção das colunas necessárias, de acordo com a <a href="https://dive.sc.gov.br/phocadownload/SINASC/Manuais%20e%20Instrutivos/dicionario-de-dados_SINASC.pdf">referência</a>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>s_data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PESO, IDADEMAE, ESCMAE, CONSULTAS, PARTO) <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PESO, IDADEMAE, ESCMAE, CONSULTAS, GESTACAO) <span class="sc">|&gt;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">peso =</span> <span class="fu">as.numeric</span>(PESO),</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">idade_mae =</span> <span class="fu">as.numeric</span>(IDADEMAE),</span>
@@ -173,39 +173,41 @@ window.Quarto = {
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Nenhuma'</span>, <span class="st">'1-3'</span>, <span class="st">'4-6'</span>, <span class="st">'7+'</span>, <span class="st">'ignorado'</span>),</span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">parto =</span> <span class="fu">factor</span>(</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        PARTO,</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'1'</span>, <span class="st">'2'</span>, <span class="st">'9'</span>),</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'vaginal'</span>, <span class="st">'cesareo'</span>, <span class="st">'ignorado'</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">semanas_gestacao =</span> <span class="fu">factor</span>(</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        GESTACAO,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'1'</span>, <span class="st">'2'</span>, <span class="st">'3'</span>, <span class="st">'4'</span>, <span class="st">'5'</span>, <span class="st">'6'</span>, <span class="st">'9'</span>),</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'menos 22'</span>, <span class="st">'22-27'</span>, <span class="st">'28-31'</span>, <span class="st">'32-36'</span>, <span class="st">'37-41'</span>, <span class="st">'42+'</span>, <span class="st">'ignorado'</span>)</span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(peso, idade_mae, escolaridade_mae_numerico, escolaridade_mae, consultas, consultas_factor, parto) <span class="sc">|&gt;</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(peso, idade_mae, escolaridade_mae_numerico, escolaridade_mae, consultas, consultas_factor, semanas_gestacao) <span class="sc">|&gt;</span></span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">|&gt;</span></span>
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># removendo as colunas marcadas como 'ignorado'</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(consultas <span class="sc">!=</span> <span class="dv">9</span> <span class="sc">&amp;</span> escolaridade_mae <span class="sc">!=</span> <span class="st">'ignorado'</span> <span class="sc">&amp;</span> parto <span class="sc">!=</span> <span class="st">'ignorado'</span>)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(consultas <span class="sc">!=</span> <span class="dv">9</span> <span class="sc">&amp;</span> escolaridade_mae <span class="sc">!=</span> <span class="st">'ignorado'</span> <span class="sc">&amp;</span> semanas_gestacao <span class="sc">!=</span> <span class="st">'ignorado'</span>)</span>
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(s_data)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      peso        idade_mae     escolaridade_mae_numerico escolaridade_mae
- Min.   : 135   Min.   :11.00   Min.   :1.000             Nenhuma :   61  
- 1st Qu.:2844   1st Qu.:22.00   1st Qu.:4.000             1-3     :  455  
- Median :3150   Median :27.00   Median :4.000             4-7     : 6350  
- Mean   :3110   Mean   :27.45   Mean   :4.204             8-11    :58569  
- 3rd Qu.:3444   3rd Qu.:32.00   3rd Qu.:5.000             12+     :26088  
+ Min.   : 135   Min.   :11.00   Min.   :1.000             Nenhuma :   59  
+ 1st Qu.:2845   1st Qu.:22.00   1st Qu.:4.000             1-3     :  452  
+ Median :3150   Median :27.00   Median :4.000             4-7     : 6340  
+ Mean   :3110   Mean   :27.45   Mean   :4.204             8-11    :58530  
+ 3rd Qu.:3445   3rd Qu.:32.00   3rd Qu.:5.000             12+     :26075  
  Max.   :6550   Max.   :58.00   Max.   :5.000             ignorado:    0  
-   consultas     consultas_factor      parto      
- Min.   :1.000   Nenhuma :  958   vaginal :29070  
- 1st Qu.:4.000   1-3     : 4499   cesareo :62453  
- Median :4.000   4-6     :16725   ignorado:    0  
- Mean   :3.688   7+      :69341                   
- 3rd Qu.:4.000   ignorado:    0                   
- Max.   :4.000                                    </code></pre>
+                                                                          
+   consultas     consultas_factor semanas_gestacao
+ Min.   :1.000   Nenhuma :  938   menos 22:   49  
+ 1st Qu.:4.000   1-3     : 4494   22-27   :  475  
+ Median :4.000   4-6     :16717   28-31   :  916  
+ Mean   :3.688   7+      :69307   32-36   : 9018  
+ 3rd Qu.:4.000   ignorado:    0   37-41   :79575  
+ Max.   :4.000                    42+     : 1423  
+                                  ignorado:    0  </code></pre>
 </div>
 </div>
 </section>
 <section id="identificando-as-variáveis-no-framework-causal" class="level2">
 <h2 class="anchored" data-anchor-id="identificando-as-variáveis-no-framework-causal">2. Identificando as variáveis no framework causal</h2>
-<p>Definindo o tratamento <span class="math inline">\(D_i\)</span> como o número adequado de consultas pré-natal (masi de 7 consultas).</p>
+<p>Definindo o tratamento <span class="math inline">\(D_i\)</span> como o número adequado de consultas pré-natal (mais de 7 consultas).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criação da variável de tratamento</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>t_data <span class="ot">&lt;-</span> s_data <span class="sc">|&gt;</span></span>
@@ -222,8 +224,8 @@ window.Quarto = {
 <pre><code># A tibble: 2 × 3
   pre_natal_adequado     n proporcao
                &lt;dbl&gt; &lt;int&gt;     &lt;dbl&gt;
-1                  0 22182      24.2
-2                  1 69341      75.8</code></pre>
+1                  0 22149      24.2
+2                  1 69307      75.8</code></pre>
 </div>
 </div>
 <ol start="2" type="a">
@@ -240,12 +242,12 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>corr <span class="ot">=</span> <span class="fu">cov</span>(t_data<span class="sc">$</span>peso, t_data<span class="sc">$</span>pre_natal_adequado)<span class="sc">/</span>(<span class="fu">sd</span>(t_data<span class="sc">$</span>peso)<span class="sc">*</span><span class="fu">sd</span>(t_data<span class="sc">$</span>pre_natal_adequado))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>corr</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.133194</code></pre>
+<pre><code>[1] 0.1328936</code></pre>
 </div>
 </div>
 <p>O valor positivo porém próximo de zero sugere que há pouca relação linear diretamente proporcional.</p>
 <ol start="2" type="a">
-<li>Essa correlação não necessariamente pode ser interpretada como causal, pois podem existir variáveis confundidoras que influenciam tanto o tratamento quanto o resultado, gerando viés. Algumas dessas variáveis podem ser idade da mãe (mães mais velhas podem ter maior estabilidade financeira e maturidade biológica), renda/escolaridade/local de moradia da mãe (podem afetar o acesso a serviços de saúde e alimentação de qualidade), etc.</li>
+<li>Essa correlação não pode ser interpretada como causal, pois podem existir variáveis confundidoras que influenciam tanto o tratamento quanto o resultado, gerando viés. Algumas dessas variáveis podem ser idade da mãe (mães mais velhas podem ter maior estabilidade financeira e maturidade biológica), renda/escolaridade/local de moradia da mãe (podem afetar o acesso a serviços de saúde e alimentação de qualidade), etc.</li>
 </ol>
 <div class="cell">
 <div class="cell-output-display">
@@ -289,10 +291,10 @@ window.Quarto = {
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>sdo <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0<span class="sc">$</span>peso)</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>sdo</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 167.8227</code></pre>
+<pre><code>[1] 167.4577</code></pre>
 </div>
 </div>
-<p>O SDO representa a diferença simples da média do resultado dos tratados (média dos pesos para mães que realizaram o pré-natal adequado) menos a média do resultado dos não tratados (média dos pesos para mães que não realizaram o pré-natal adequado). Esse valor <strong>não</strong> corresponde à ATE, compara os resultados obtidos entre tratados e controle e não os resultados potenciais dos tratados.</p>
+<p>O SDO representa a diferença simples da média do resultado dos tratados (média dos pesos para mães que realizaram o pré-natal adequado) e da média do resultado dos não tratados (média dos pesos para mães que não realizaram o pré-natal adequado). Esse valor <strong>não</strong> corresponde à ATE, ele é apenas a comparação dos resultados obtidos entre tratados e controle e não a comparação dos resultados potenciais.</p>
 <ol start="2" type="a">
 <li><p>O SDO pode ser uma estimativa enviesada do efeito do pré-natal sobre o peso ao nascer pois os valores de <span class="math inline">\(Y(0)\)</span> para os tratados e o controle podem ser diferentes, fazendo com que os grupos não sejam comparáveis antes do tratamento.</p></li>
 <li></li>
@@ -311,60 +313,58 @@ SDO &amp;= \underbrace{E[Y(1)|D=1] - E[Y(0)|D=1]}_{\text{ATT}} + \underbrace{E[Y
 <li></li>
 </ol>
 <ul>
-<li>Idade das mães que fizeram pré-natal adequado:</li>
+<li>Comparação da idade das mães nos grupos</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(idade_mae <span class="sc">~</span> pre_natal_adequado, <span class="at">data =</span> t_data)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  12.00   23.00   28.00   27.98   33.00   58.00 </code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  idade_mae by pre_natal_adequado
+t = -43.44, df = 37029, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -2.266562 -2.070857
+sample estimates:
+mean in group 0 mean in group 1 
+       25.80708        27.97579 </code></pre>
 </div>
 </div>
 <ul>
-<li>Idade das mães que não fizeram pré-natal adequado:</li>
+<li>Comparação da escolaridade das mães nos grupos:</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(escolaridade_mae_numerico <span class="sc">~</span> pre_natal_adequado, <span class="at">data =</span> t_data)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  11.00   21.00   25.00   25.81   30.00   52.00 </code></pre>
-</div>
-</div>
-<ul>
-<li>Escolaridade das mães que fizeram pré-natal adequado:</li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   4.000   4.000   4.265   5.000   5.000 </code></pre>
-</div>
-</div>
-<ul>
-<li>Escolaridade das mães que fizeram pré-natal adequado:</li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   4.000   4.000   4.012   4.000   5.000 </code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  escolaridade_mae_numerico by pre_natal_adequado
+t = -58.188, df = 38320, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -0.2612809 -0.2442522
+sample estimates:
+mean in group 0 mean in group 1 
+       4.012416        4.265182 </code></pre>
 </div>
 </div>
 <p>Em termos de escolaridade, os grupos tratados e não tratados são praticamente comparáveis, não havendo muita diferença nos níveis de educação das mães que realizaram e dasque não realizaram pré-natal adequado. Talvez essa diferença fosse melhor observada se os anos de escolaridade não estivessem categorizados.</p>
 <p>Em termos de idade, porém, os grupos passam a não ser comparáveis. As mães que realizaram pré-natal adequado tendem a ser um pouco mais velhas, mostrando que mães mais maduras buscam mais por um número adequado de consultas.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_natal_adequado =</span> <span class="fu">ifelse</span>(pre_natal_adequado <span class="sc">==</span> <span class="dv">1</span>, <span class="st">'D=1'</span>, <span class="st">'D=0'</span>)</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> idade_mae, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_natal_adequado =</span> <span class="fu">ifelse</span>(pre_natal_adequado <span class="sc">==</span> <span class="dv">1</span>, <span class="st">'D=1'</span>, <span class="st">'D=0'</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> idade_mae, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="lista4_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="lista4_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -377,13 +377,13 @@ SDO &amp;= \underbrace{E[Y(1)|D=1] - E[Y(0)|D=1]}_{\text{ATT}} + \underbrace{E[Y
 <li></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> peso, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> peso, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="lista4_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="lista4_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -399,35 +399,35 @@ SDO &amp;= \underbrace{E[Y(1)|D=1] - E[Y(0)|D=1]}_{\text{ATT}} + \underbrace{E[Y
 <li>Modelo sem covariadas</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>modelo_simples <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado, <span class="at">data =</span> t_data)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simples)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>modelo_simples <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado, <span class="at">data =</span> t_data)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simples)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = peso ~ pre_natal_adequado, data = t_data)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--3015.9  -270.9    34.1   329.1  3566.9 
+   Min     1Q Median     3Q    Max 
+ -3016   -271     34    329   3566 
 
 Coefficients:
                    Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)        2983.100      3.593  830.27   &lt;2e-16 ***
-pre_natal_adequado  167.823      4.128   40.66   &lt;2e-16 ***
+(Intercept)        2983.536      3.595  829.89   &lt;2e-16 ***
+pre_natal_adequado  167.458      4.130   40.55   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 535.1 on 91521 degrees of freedom
-Multiple R-squared:  0.01774,   Adjusted R-squared:  0.01773 
-F-statistic:  1653 on 1 and 91521 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 535 on 91454 degrees of freedom
+Multiple R-squared:  0.01766,   Adjusted R-squared:  0.01765 
+F-statistic:  1644 on 1 and 91454 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <ul>
 <li>Modelo com covariadas</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae, <span class="at">data =</span> t_data)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae, <span class="at">data =</span> t_data)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -436,29 +436,68 @@ lm(formula = peso ~ pre_natal_adequado + idade_mae + escolaridade_mae,
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--2993.6  -271.2    35.6   330.0  3591.1 
+-2993.6  -271.1    35.5   330.0  3590.7 
 
 Coefficients:
                       Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)          2758.6961    69.1625  39.887  &lt; 2e-16 ***
-pre_natal_adequado    169.6057     4.2227  40.165  &lt; 2e-16 ***
-idade_mae               0.6808     0.2892   2.354  0.01856 *  
-escolaridade_mae1-3   180.6246    72.9379   2.476  0.01327 *  
-escolaridade_mae4-7   182.0852    68.8377   2.645  0.00817 ** 
-escolaridade_mae8-11  216.2874    68.5594   3.155  0.00161 ** 
-escolaridade_mae12+   183.9104    68.5843   2.682  0.00733 ** 
+(Intercept)          2803.6909    70.2829  39.892   &lt;2e-16 ***
+pre_natal_adequado    169.3126     4.2247  40.077   &lt;2e-16 ***
+idade_mae               0.6873     0.2893   2.376   0.0175 *  
+escolaridade_mae1-3   138.9010    74.0385   1.876   0.0606 .  
+escolaridade_mae4-7   137.6745    69.9728   1.968   0.0491 *  
+escolaridade_mae8-11  171.4004    69.6974   2.459   0.0139 *  
+escolaridade_mae12+   139.0677    69.7234   1.995   0.0461 *  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 534.9 on 91516 degrees of freedom
-Multiple R-squared:  0.01861,   Adjusted R-squared:  0.01854 
-F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 534.8 on 91449 degrees of freedom
+Multiple R-squared:  0.01848,   Adjusted R-squared:  0.01842 
+F-statistic:   287 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p>O coeficiente de D (pré-natal adequado) muda muito pouco após incluir os controles. Isso significa que as variáveis controladas adicionam pouco viés de seleção ao efeito do tratamento.</p>
 <ol start="2" type="a">
-<li><p>Não necessariamente o coeficiente de D no modelo com controles pode ser interpretado como efeito causal do pré-natal adequado sobre o peso a nascer. Para que pudessemos fazer essa afirmação, seria necessário que controlássemos para todas as variáveis confundidoras do tratamento e do efeito.</p></li>
-<li><p>Em um RTC, estimaríamos de fato o efeito causal do tratatamento sobre o resultado, pois eliminaríamos todos os vieses causados por possíveis variáveis confundidoras ao aleatorizar os grupos e torná-los comparáveis antes do tratamento. No nosso modelo com controle de covariadas, estamos estimando a associação entre tratamento e efeito sem levar em consideração o efeito das confudidoras que controlamos. Os dois seriam iguais caso fosse possível controlar por todas as confundidoras.</p></li>
+<li>Não necessariamente o coeficiente de D no modelo com controles pode ser interpretado como efeito causal do pré-natal adequado sobre o peso a nascer. Para que pudessemos fazer essa afirmação, seria necessário que controlássemos para todas as variáveis confundidoras do tratamento e do efeito.</li>
+</ol>
+<p>Vamos controlar agora por uma variável confundidora mais óbvia: número de semanas de gestação. Essa variável influencia tanto o peso ao nascer quanto o número de consultas pré-natal.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae <span class="sc">+</span> semanas_gestacao, <span class="at">data =</span> t_data)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = peso ~ pre_natal_adequado + idade_mae + escolaridade_mae + 
+    semanas_gestacao, data = t_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2977.0  -287.6    -8.2   277.4  3784.6 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)            674.5631    88.0774   7.659  1.9e-14 ***
+pre_natal_adequado      52.6429     3.6382  14.469  &lt; 2e-16 ***
+idade_mae                2.4197     0.2457   9.847  &lt; 2e-16 ***
+escolaridade_mae1-3     75.4305    62.8285   1.201   0.2299    
+escolaridade_mae4-7     83.0828    59.3775   1.399   0.1617    
+escolaridade_mae8-11   115.1677    59.1437   1.947   0.0515 .  
+escolaridade_mae12+     90.5946    59.1658   1.531   0.1257    
+semanas_gestacao22-27  140.3401    68.0971   2.061   0.0393 *  
+semanas_gestacao28-31  748.5022    66.5538  11.247  &lt; 2e-16 ***
+semanas_gestacao32-36 1688.0666    65.0403  25.954  &lt; 2e-16 ***
+semanas_gestacao37-41 2312.5889    64.9009  35.633  &lt; 2e-16 ***
+semanas_gestacao42+   2381.4373    65.9876  36.089  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 453.8 on 91444 degrees of freedom
+Multiple R-squared:  0.2933,    Adjusted R-squared:  0.2932 
+F-statistic:  3450 on 11 and 91444 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Nesse novo modelo, podemos observar que o coeficiente do tratamento diminui bastante, mostrando que o número de semanas gestacionais gerava bastante viés.</p>
+<ol start="3" type="a">
+<li>Em um RTC, estimaríamos de fato o efeito causal do tratatamento sobre o resultado, pois eliminaríamos todos os vieses causados por possíveis variáveis confundidoras ao aleatorizar os grupos e torná-los comparáveis antes do tratamento. No nosso modelo com controle de covariadas, estamos estimando a associação entre tratamento e efeito sem levar em consideração o efeito das confudidoras que controlamos. Os dois seriam iguais caso fosse possível controlar por todas as confundidoras.</li>
 </ol>
 </section>
 </section>
@@ -467,18 +506,18 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="atribuição-aleatória-de-tratamento" class="level2">
 <h2 class="anchored" data-anchor-id="atribuição-aleatória-de-tratamento">7. Atribuição aleatória de tratamento</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>t_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">tratamento_aleatorio =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>d0_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>d1_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>sdo_a <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_a<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_a<span class="sc">$</span>peso)</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>sdo_a</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>t_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">tratamento_aleatorio =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>d0_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>d1_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>sdo_a <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_a<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_a<span class="sc">$</span>peso)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>sdo_a</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -3.545317</code></pre>
+<pre><code>[1] -2.438757</code></pre>
 </div>
 </div>
 <p>a . O SDO com tratamento aleatório difere muito do SDO observado, sendo muito menor. Essa diferença pode nos dizer que o tratamento aleatorizado tem quase nenhum impacto causal no resultado (peso do bebê).</p>
@@ -489,40 +528,40 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Idade das mães que fizeram pré-natal adequado:</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  11.00   22.00   27.00   27.48   32.00   58.00 </code></pre>
+  12.00   22.00   27.00   27.47   32.00   52.00 </code></pre>
 </div>
 </div>
 <ul>
 <li>Idade das mães que não fizeram pré-natal adequado:</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  11.00   22.00   27.00   27.43   32.00   52.00 </code></pre>
+  11.00   22.00   27.00   27.43   32.00   58.00 </code></pre>
 </div>
 </div>
 <ul>
 <li>Escolaridade das mães que fizeram pré-natal adequado:</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   4.000   4.000   4.206   5.000   5.000 </code></pre>
+  1.000   4.000   4.000   4.204   5.000   5.000 </code></pre>
 </div>
 </div>
 <ul>
 <li>Escolaridade das mães que fizeram pré-natal adequado:</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   4.000   4.000   4.202   5.000   5.000 </code></pre>
+  1.000   4.000   4.000   4.204   5.000   5.000 </code></pre>
 </div>
 </div>
 <p>Os grupos estão bastante equilibrados agora, pois as amostras foram feitas aleatoriamente.</p>
@@ -533,33 +572,33 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="distribuição-do-estimador-sob-aleatorização" class="level2">
 <h2 class="anchored" data-anchor-id="distribuição-do-estimador-sob-aleatorização">8. Distribuição do estimador sob aleatorização</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sdos <span class="ot">=</span> <span class="fu">c</span>()</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  data_aux <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">tratamento_aleatorio_s =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  d0_aux <span class="ot">&lt;-</span> data_aux <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio_s <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  d1_aux <span class="ot">&lt;-</span> data_aux <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio_s <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  sdo_aux <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_aux<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_aux<span class="sc">$</span>peso)</span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  sdos <span class="ot">&lt;-</span> <span class="fu">c</span>(sdos, sdo_aux)</span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sdos)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>sdos <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  data_aux <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">tratamento_aleatorio_s =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  d0_aux <span class="ot">&lt;-</span> data_aux <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio_s <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  d1_aux <span class="ot">&lt;-</span> data_aux <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio_s <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  sdo_aux <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_aux<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_aux<span class="sc">$</span>peso)</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  sdos <span class="ot">&lt;-</span> <span class="fu">c</span>(sdos, sdo_aux)</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sdos)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
--10.188553  -2.510698   0.066817  -0.006808   2.389735  10.752087 </code></pre>
+<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+-11.79283  -2.44248   0.14589   0.03511   2.39434  11.43090 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sdos)</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>sdos) <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sdos)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>sdos) <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="lista4_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="lista4_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -569,10 +608,10 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>desvio <span class="ot">&lt;-</span> <span class="fu">sd</span>(sdos, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>desvio</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>desvio <span class="ot">&lt;-</span> <span class="fu">sd</span>(sdos, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>desvio</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.409273</code></pre>
+<pre><code>[1] 3.698907</code></pre>
 </div>
 </div>
 <p>O desvio está na mesma ordem de grandeza do erro padrão do coeficiente estimado na regressão.</p>
@@ -586,27 +625,27 @@ F-statistic: 289.2 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>modelo_simples_a <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> tratamento_aleatorio, <span class="at">data =</span> t_data)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simples_a)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>modelo_simples_a <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> tratamento_aleatorio, <span class="at">data =</span> t_data)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simples_a)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = peso ~ tratamento_aleatorio, data = t_data)
 
 Residuals:
-   Min     1Q Median     3Q    Max 
- -2977   -267     38    333   3442 
+    Min      1Q  Median      3Q     Max 
+-2974.2  -266.7    38.3   333.3  3438.3 
 
 Coefficients:
                      Estimate Std. Error  t value Pr(&gt;|t|)    
-(Intercept)          3112.017      2.521 1234.394   &lt;2e-16 ***
-tratamento_aleatorio   -3.545      3.569   -0.993    0.321    
+(Intercept)          3111.658      2.524 1232.661   &lt;2e-16 ***
+tratamento_aleatorio   -2.439      3.570   -0.683    0.495    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 539.9 on 91521 degrees of freedom
-Multiple R-squared:  1.078e-05, Adjusted R-squared:  -1.472e-07 
-F-statistic: 0.9865 on 1 and 91521 DF,  p-value: 0.3206</code></pre>
+Residual standard error: 539.8 on 91454 degrees of freedom
+Multiple R-squared:  5.102e-06, Adjusted R-squared:  -5.832e-06 
+F-statistic: 0.4666 on 1 and 91454 DF,  p-value: 0.4945</code></pre>
 </div>
 </div>
 <p>O coeficiente de D não é estatisticamente significativo (<span class="math inline">\(p &gt; 0.05\)</span>). Isso indica que nessa simulação, não há efeito causal e nem correlação.</p>
@@ -614,8 +653,8 @@ F-statistic: 0.9865 on 1 and 91521 DF,  p-value: 0.3206</code></pre>
 <li></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada_a <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> tratamento_aleatorio <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae, <span class="at">data =</span> t_data)</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada_a)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada_a <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> tratamento_aleatorio <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae, <span class="at">data =</span> t_data)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada_a)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -624,23 +663,23 @@ lm(formula = peso ~ tratamento_aleatorio + idade_mae + escolaridade_mae,
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--2966.1  -267.2    39.5   332.2  3452.8 
+-2963.1  -267.2    39.4   332.3  3449.7 
 
 Coefficients:
                       Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)          2816.3295    69.7792  40.361  &lt; 2e-16 ***
-tratamento_aleatorio   -3.6673     3.5672  -1.028 0.303925    
-idade_mae               1.8509     0.2902   6.377 1.81e-10 ***
-escolaridade_mae1-3   187.0052    73.5775   2.542 0.011036 *  
-escolaridade_mae4-7   194.6099    69.4407   2.803 0.005071 ** 
-escolaridade_mae8-11  253.2632    69.1544   3.662 0.000250 ***
-escolaridade_mae12+   240.0839    69.1714   3.471 0.000519 ***
+(Intercept)          2864.1639    70.9042  40.395  &lt; 2e-16 ***
+tratamento_aleatorio   -2.4415     3.5680  -0.684  0.49380    
+idade_mae               1.8557     0.2903   6.392 1.65e-10 ***
+escolaridade_mae1-3   142.4530    74.6856   1.907  0.05648 .  
+escolaridade_mae4-7   146.6629    70.5841   2.078  0.03773 *  
+escolaridade_mae8-11  204.7872    70.3016   2.913  0.00358 ** 
+escolaridade_mae12+   191.5943    70.3204   2.725  0.00644 ** 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 539.6 on 91516 degrees of freedom
-Multiple R-squared:  0.001318,  Adjusted R-squared:  0.001253 
-F-statistic: 20.13 on 6 and 91516 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 539.5 on 91449 degrees of freedom
+Multiple R-squared:  0.001246,  Adjusted R-squared:  0.00118 
+F-statistic: 19.02 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p>Os erros padrão de D nos dois modelos permaneceu a mesma, ou seja, incluir as covariadas não melhorou a precisão da estimativa. Isso acontece pois em um RTC, os efeitos da covariadas já são levadas em consideração.</p>

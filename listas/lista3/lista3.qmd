@@ -2,7 +2,7 @@
 title: "Resolução da lista 3"
 subtitle: "Curso de inferência causal"
 author: "Camila Brito"
-format: html
+format: pdf
 lang: pt
 ---
 
@@ -116,7 +116,7 @@ c. O contrafactual seria a frequência escolar da criança que participou do pro
 
 d. O ATE mediria o efeito do programa sobre toda a população, ou seja, quanto o programa aumenta a frequencia escolar para todos. Caso esse efeito fosse positivo e estatisticamente significativo, um formulador de políticas públicas teria evidências de que o programa causa o aumento da frequencia escolar e poderia expandí-lo para o restante da população. 
 
-## 6. SDO, ATE e vié em dados observacionais
+## 6. SDO, ATE e viés em dados observacionais
 
 a. O valor de R$ 450 observado corresponde ao SDO, pois é a diferença simples do salário dos que participaram do curso ($E[Y(1)|D=1]$) dos que não participaram ($E[Y(0)|D=0]$).
 

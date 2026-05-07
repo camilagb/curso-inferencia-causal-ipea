@@ -2,7 +2,7 @@
 title: "Resolução da lista 2"
 subtitle: "Curso de inferência causal"
 author: "Camila Brito"
-format: pdf
+format: html
 lang: pt
 execute:
     warning: false
