@@ -1,0 +1,41 @@
+---
+title: "Resolução da lista 1"
+subtitle: "Curso de inferência causal"
+author: "Camila Brito"
+format: pdf
+lang: pt
+---
+
+# Seção I - Questões conceituais
+
+## 1. Efeito causal e contrafactual
+
+a. Estimar o efeito causal de uma política pública significa avaliar o impacto da política no resultado esperado, de forma isolada.
+
+b. Contrafactual é o resultado que teria sido observado na população que recebeu o tratamento, caso não o tivesse recebido.
+
+c. O contrafactual não é diretamente observado pois ele é uma realidade hipotética que não aconteceu.
+
+d. Num mundo hipotético, conseguiríamos fazer a avaliação de impacto subtraindo o resultado fatual do contrafactual. Como nunca observamos o contrafactual, o desafio para a avaliação de impacto é conseguir encontrar grupos de controle similares ao de tratamento para fazer a comparação.
+
+## 2. Inferência estatística
+
+a. A distribuição amostral de um estimador é a distribuição de probabilidade dos valores que esse estimador pode assumir, para várias amostras aleatórias de mesmo tamanho (n). Para amostras grandes, a distribuição amostral da média tende a se aproximar de uma normal, pelo teorema central do limite.
+
+b. O erro padrão de um estimador é o seu desvio padrão. Ele nos diz o quão distante a nossa estimativa está do verdadeiro valor, nos dando uma precisão da estimativa. É calculado por $EP = \sigma/\sqrt{n}$.
+
+c. 
+
+## 3. Tipos de dados
+
+## 4. Regressão linear e hipóteses
+
+# Seção II - Exercícios aplicados
+
+## 5.
+
+## 6.
+
+## 7. 
+
+## 8.

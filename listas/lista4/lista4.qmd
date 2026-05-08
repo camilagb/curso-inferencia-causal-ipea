@@ -167,9 +167,16 @@ t.test(idade_mae ~ pre_natal_adequado, data = t_data)
 t.test(escolaridade_mae_numerico ~ pre_natal_adequado, data = t_data)
 ```
 
-Em termos de escolaridade, os grupos tratados e não tratados são praticamente comparáveis, não havendo muita diferença nos níveis de educação das mães que realizaram e das que não realizaram pré-natal adequado. Talvez essa diferença fosse melhor observada se os anos de escolaridade não estivessem categorizados.
+```{r}
+t_data |>
+  group_by(pre_natal_adequado) |>
+  summarise(
+    media_idade = mean(idade_mae),
+    media_escolaridade = mean(escolaridade_mae_numerico)
+  )
+```
 
-Em termos de idade, porém, os grupos passam a não ser comparáveis. As mães que realizaram pré-natal adequado tendem a ser um pouco mais velhas, mostrando que mães mais maduras buscam mais por um número adequado de consultas.
+Como p < 0.05 para as médias de escolaridade e idade nos dois grupos, temos que o grupo de controle e o de tratamento não são iguais para essas variáveis e não são comparáveis.  
 
 ```{r}
 aux_data <- t_data |> 
@@ -270,7 +277,7 @@ t_data |>
   )
 ```
 
-Os grupos estão bastante equilibrados agora, sendo estatisticamente iguais para os grupos (p >> 0.05), pois as amostras foram feitas aleatoriamente.
+Os grupos estão bastante equilibrados agora, sendo estatisticamente iguais (p >> 0.05 para o teste que compara as médias nos dois grupos), pois as amostras foram feitas aleatoriamente.
 
 c. O SDO aleatorizado é uma estimativa causal válida, mostranto o efeito do tratamento aleatório sobre o resultado (que é 0). Lembrando que, já que o tratamento foi atribuído aleatoriamente, ele não tem de fato nenhuma relação com o peso observados dos bebês são observados.
 

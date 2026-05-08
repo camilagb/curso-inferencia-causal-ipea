@@ -350,21 +350,35 @@ mean in group 0 mean in group 1
        4.012416        4.265182 </code></pre>
 </div>
 </div>
-<p>Em termos de escolaridade, os grupos tratados e não tratados são praticamente comparáveis, não havendo muita diferença nos níveis de educação das mães que realizaram e dasque não realizaram pré-natal adequado. Talvez essa diferença fosse melhor observada se os anos de escolaridade não estivessem categorizados.</p>
-<p>Em termos de idade, porém, os grupos passam a não ser comparáveis. As mães que realizaram pré-natal adequado tendem a ser um pouco mais velhas, mostrando que mães mais maduras buscam mais por um número adequado de consultas.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_natal_adequado =</span> <span class="fu">ifelse</span>(pre_natal_adequado <span class="sc">==</span> <span class="dv">1</span>, <span class="st">'D=1'</span>, <span class="st">'D=0'</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> idade_mae, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>t_data <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pre_natal_adequado) <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">media_idade =</span> <span class="fu">mean</span>(idade_mae),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">media_escolaridade =</span> <span class="fu">mean</span>(escolaridade_mae_numerico)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  pre_natal_adequado media_idade media_escolaridade
+               &lt;dbl&gt;       &lt;dbl&gt;              &lt;dbl&gt;
+1                  0        25.8               4.01
+2                  1        28.0               4.27</code></pre>
+</div>
+</div>
+<p>Como p &lt; 0.05 para as médias de escolaridade e idade nos dois grupos, temos que o grupo de controle e o de tratamento não são iguais para essas variáveis e não são comparáveis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_natal_adequado =</span> <span class="fu">ifelse</span>(pre_natal_adequado <span class="sc">==</span> <span class="dv">1</span>, <span class="st">'D=1'</span>, <span class="st">'D=0'</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> idade_mae, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="lista4_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="lista4_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -377,13 +391,13 @@ mean in group 0 mean in group 1
 <li></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> peso, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>aux_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> peso, <span class="at">fill =</span> pre_natal_adequado) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="lista4_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="lista4_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -399,8 +413,8 @@ mean in group 0 mean in group 1
 <li>Modelo sem covariadas</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>modelo_simples <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado, <span class="at">data =</span> t_data)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simples)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>modelo_simples <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado, <span class="at">data =</span> t_data)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simples)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -426,8 +440,8 @@ F-statistic:  1644 on 1 and 91454 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Modelo com covariadas</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae, <span class="at">data =</span> t_data)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae, <span class="at">data =</span> t_data)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -461,8 +475,8 @@ F-statistic:   287 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 </ol>
 <p>Vamos controlar agora por uma variável confundidora mais óbvia: número de semanas de gestação. Essa variável influencia tanto o peso ao nascer quanto o número de consultas pré-natal.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae <span class="sc">+</span> semanas_gestacao, <span class="at">data =</span> t_data)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>modelo_covariada2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(peso <span class="sc">~</span> pre_natal_adequado <span class="sc">+</span> idade_mae <span class="sc">+</span> escolaridade_mae <span class="sc">+</span> semanas_gestacao, <span class="at">data =</span> t_data)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covariada2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -506,67 +520,80 @@ F-statistic:  3450 on 11 and 91444 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="atribuição-aleatória-de-tratamento" class="level2">
 <h2 class="anchored" data-anchor-id="atribuição-aleatória-de-tratamento">7. Atribuição aleatória de tratamento</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>t_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">tratamento_aleatorio =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>d0_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>d1_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>sdo_a <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_a<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_a<span class="sc">$</span>peso)</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>sdo_a</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>t_data <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">tratamento_aleatorio =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>d0_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>d1_a <span class="ot">&lt;-</span> t_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(tratamento_aleatorio <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>sdo_a <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_a<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_a<span class="sc">$</span>peso)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>sdo_a</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -2.438757</code></pre>
+<pre><code>[1] -2.743945</code></pre>
 </div>
 </div>
-<p>a . O SDO com tratamento aleatório difere muito do SDO observado, sendo muito menor. Essa diferença pode nos dizer que o tratamento aleatorizado tem quase nenhum impacto causal no resultado (peso do bebê).</p>
+<p>a . O SDO com tratamento aleatório difere muito do SDO observado, tendendo a zero. Essa diferença nos diz que o tratamento aleatorizado não tem impacto causal no resultado (peso do bebê).</p>
 <ol start="2" type="a">
 <li></li>
 </ol>
 <ul>
-<li>Idade das mães que fizeram pré-natal adequado:</li>
+<li>Comparação da idade das mães nos grupos</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(idade_mae <span class="sc">~</span> tratamento_aleatorio, <span class="at">data =</span> t_data)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  12.00   22.00   27.00   27.47   32.00   52.00 </code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  idade_mae by tratamento_aleatorio
+t = -0.12443, df = 91454, p-value = 0.901
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -0.08961150  0.07891241
+sample estimates:
+mean in group 0 mean in group 1 
+       27.44788        27.45323 </code></pre>
 </div>
 </div>
 <ul>
-<li>Idade das mães que não fizeram pré-natal adequado:</li>
+<li>Comparação da escolaridade das mães nos grupos</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>idade_mae)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(escolaridade_mae_numerico <span class="sc">~</span> tratamento_aleatorio, <span class="at">data =</span> t_data)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  11.00   22.00   27.00   27.43   32.00   58.00 </code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  escolaridade_mae_numerico by tratamento_aleatorio
+t = 1.4919, df = 91454, p-value = 0.1357
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -0.001800786  0.013279822
+sample estimates:
+mean in group 0 mean in group 1 
+       4.206847        4.201107 </code></pre>
 </div>
 </div>
-<ul>
-<li>Escolaridade das mães que fizeram pré-natal adequado:</li>
-</ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d1_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>t_data <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(tratamento_aleatorio) <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">media_idade =</span> <span class="fu">mean</span>(idade_mae),</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">media_escolaridade =</span> <span class="fu">mean</span>(escolaridade_mae_numerico)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   4.000   4.000   4.204   5.000   5.000 </code></pre>
+<pre><code># A tibble: 2 × 3
+  tratamento_aleatorio media_idade media_escolaridade
+                 &lt;dbl&gt;       &lt;dbl&gt;              &lt;dbl&gt;
+1                    0        27.4               4.21
+2                    1        27.5               4.20</code></pre>
 </div>
 </div>
-<ul>
-<li>Escolaridade das mães que fizeram pré-natal adequado:</li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d0_a<span class="sc">$</span>escolaridade_mae_numerico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   4.000   4.000   4.204   5.000   5.000 </code></pre>
-</div>
-</div>
-<p>Os grupos estão bastante equilibrados agora, pois as amostras foram feitas aleatoriamente.</p>
+<p>Os grupos estão bastante equilibrados agora, sendo estatisticamente iguais (p &gt;&gt; 0.05 para o teste que compara as médias nos dois grupos), pois as amostras foram feitas aleatoriamente.</p>
 <ol start="3" type="a">
-<li>O SDO aleatorizado não é uma estimativa causal válida, pois, apesar do tratamento ter sido atribuído aleatoriamente, os pesos dos bebês são observados e não tem relação com o tratamento.</li>
+<li>O SDO aleatorizado é uma estimativa causal válida, mostranto o efeito do tratamento aleatório sobre o resultado (que é 0). Lembrando que, já que o tratamento foi atribuído aleatoriamente, ele não tem de fato nenhuma relação com o peso observados dos bebês são observados.</li>
 </ol>
 </section>
 <section id="distribuição-do-estimador-sob-aleatorização" class="level2">
@@ -591,7 +618,7 @@ F-statistic:  3450 on 11 and 91444 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sdos)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
--11.79283  -2.44248   0.14589   0.03511   2.39434  11.43090 </code></pre>
+-13.30160  -2.53731   0.03826  -0.06401   2.34436  10.05027 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sdos)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>sdos) <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
@@ -611,7 +638,7 @@ F-statistic:  3450 on 11 and 91444 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>desvio <span class="ot">&lt;-</span> <span class="fu">sd</span>(sdos, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>desvio</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.698907</code></pre>
+<pre><code>[1] 3.696412</code></pre>
 </div>
 </div>
 <p>O desvio está na mesma ordem de grandeza do erro padrão do coeficiente estimado na regressão.</p>
@@ -634,21 +661,21 @@ lm(formula = peso ~ tratamento_aleatorio, data = t_data)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--2974.2  -266.7    38.3   333.3  3438.3 
+-2976.8  -266.8    38.2   333.2  3440.9 
 
 Coefficients:
                      Estimate Std. Error  t value Pr(&gt;|t|)    
-(Intercept)          3111.658      2.524 1232.661   &lt;2e-16 ***
-tratamento_aleatorio   -2.439      3.570   -0.683    0.495    
+(Intercept)          3111.815      2.529 1230.539   &lt;2e-16 ***
+tratamento_aleatorio   -2.744      3.570   -0.769    0.442    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 539.8 on 91454 degrees of freedom
-Multiple R-squared:  5.102e-06, Adjusted R-squared:  -5.832e-06 
-F-statistic: 0.4666 on 1 and 91454 DF,  p-value: 0.4945</code></pre>
+Multiple R-squared:  6.459e-06, Adjusted R-squared:  -4.475e-06 
+F-statistic: 0.5907 on 1 and 91454 DF,  p-value: 0.4421</code></pre>
 </div>
 </div>
-<p>O coeficiente de D não é estatisticamente significativo (<span class="math inline">\(p &gt; 0.05\)</span>). Isso indica que nessa simulação, não há efeito causal e nem correlação.</p>
+<p>O coeficiente de D não é estatisticamente significativo (<span class="math inline">\(p &gt; 0.05\)</span>). Isso indica que nessa simulação, não há efeito causal e nem correlação entre o peso ao nascer e o tratamento aleatório.</p>
 <ol start="2" type="a">
 <li></li>
 </ol>
@@ -663,28 +690,28 @@ lm(formula = peso ~ tratamento_aleatorio + idade_mae + escolaridade_mae,
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--2963.1  -267.2    39.4   332.3  3449.7 
+-2965.6  -267.3    39.3   332.3  3452.2 
 
 Coefficients:
                       Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)          2864.1639    70.9042  40.395  &lt; 2e-16 ***
-tratamento_aleatorio   -2.4415     3.5680  -0.684  0.49380    
-idade_mae               1.8557     0.2903   6.392 1.65e-10 ***
-escolaridade_mae1-3   142.4530    74.6856   1.907  0.05648 .  
-escolaridade_mae4-7   146.6629    70.5841   2.078  0.03773 *  
-escolaridade_mae8-11  204.7872    70.3016   2.913  0.00358 ** 
-escolaridade_mae12+   191.5943    70.3204   2.725  0.00644 ** 
+(Intercept)          2864.2392    70.9045  40.396  &lt; 2e-16 ***
+tratamento_aleatorio   -2.5757     3.5681  -0.722  0.47037    
+idade_mae               1.8555     0.2903   6.391 1.66e-10 ***
+escolaridade_mae1-3   142.4525    74.6856   1.907  0.05648 .  
+escolaridade_mae4-7   146.6924    70.5840   2.078  0.03769 *  
+escolaridade_mae8-11  204.7898    70.3016   2.913  0.00358 ** 
+escolaridade_mae12+   191.5892    70.3204   2.725  0.00644 ** 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 539.5 on 91449 degrees of freedom
-Multiple R-squared:  0.001246,  Adjusted R-squared:  0.00118 
+Multiple R-squared:  0.001247,  Adjusted R-squared:  0.001181 
 F-statistic: 19.02 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p>Os erros padrão de D nos dois modelos permaneceu a mesma, ou seja, incluir as covariadas não melhorou a precisão da estimativa. Isso acontece pois em um RTC, os efeitos da covariadas já são levadas em consideração.</p>
+<p>Os erros padrão de D nos dois modelos permaneceu a mesma, ou seja, incluir as covariadas não melhorou a precisão da estimativa. Isso acontece pois em um RTC, os efeitos das covariadas já são levadas em consideração.</p>
 <ol start="3" type="a">
-<li></li>
+<li>O RCT satifaz a hipótese da independência, que torna os grupos de controle e tratamento comparáveis, o que não acontece no dado observado.</li>
 </ol>
 </section>
 </section>
