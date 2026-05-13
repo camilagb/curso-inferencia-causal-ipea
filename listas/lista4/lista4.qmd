@@ -2,7 +2,7 @@
 title: "Resolução da lista 4"
 subtitle: "Curso de inferência causal"
 author: "Camila Brito"
-format: html
+format: pdf
 lang: pt
 execute:
     warning: false
@@ -142,12 +142,10 @@ b. O SDO pode ser uma estimativa enviesada do efeito do pré-natal sobre o peso 
 
 c. 
 
-$$
 \begin{align}
 SDO &= E[Y(1)|D=1] - E[Y(0)|D=0] \\
 SDO &= \underbrace{E[Y(1)|D=1] - E[Y(0)|D=1]}_{\text{ATT}} + \underbrace{E[Y(0)|D=1] - E[Y(0)|D=0]}_{\text{Viés de seleção}}
 \end{align}
-$$
 
 O sinal esperado do viés nesse contexto é positivo, ou seja, o $Y(0)$ das mães que realizaram pré-natal adequado ($D=1$) tende a ser maior que o das mães que não realizaram o pré-natal adequado. Isso se dá pelas variáveis confundidoras discutidas anteriormente em que uma mãe que realizou o pré-natal corretamente já tenderia a ter bebês com maior peso devido à possível maior renda, maior acesso a serviços de saúde, maior maturidade etc.
 
@@ -252,7 +250,7 @@ sdo_a <- mean(d1_a$peso) - mean(d0_a$peso)
 sdo_a
 ```
 
-a . O SDO com tratamento aleatório difere muito do SDO observado, tendendo a zero. Essa diferença nos diz que o tratamento aleatorizado não tem impacto causal no resultado (peso do bebê).
+a . O SDO com tratamento aleatório difere muito do SDO observado, tendendo a zero. Essa diferença nos diz que, como o tratamento aleatorizado não tem nenhum efeito sobre o resultado (peso do bebê), seu ATE é zero, tal qual o SDO, mostrando que o viés de seleção não existe mais.
 
 b. 
 
@@ -279,7 +277,7 @@ t_data |>
 
 Os grupos estão bastante equilibrados agora, sendo estatisticamente iguais (p >> 0.05 para o teste que compara as médias nos dois grupos), pois as amostras foram feitas aleatoriamente.
 
-c. O SDO aleatorizado é uma estimativa causal válida, mostranto o efeito do tratamento aleatório sobre o resultado (que é 0). Lembrando que, já que o tratamento foi atribuído aleatoriamente, ele não tem de fato nenhuma relação com o peso observados dos bebês são observados.
+c. O SDO aleatorizado é uma estimativa causal válida, mostranto o efeito do tratamento aleatório sobre o resultado (que é 0). Lembrando que, já que o tratamento foi atribuído aleatoriamente, ele não tem de fato nenhuma relação com o peso observado dos bebês.
 
 ## 8. Distribuição do estimador sob aleatorização
 
@@ -306,7 +304,7 @@ df_sdos <- data.frame(sdos)
 df_sdos |> ggplot() + aes(x=sdos) + geom_density()
 ```
 
-a. A distribuição do SDO aleatorizado se concentra em torno do zero. Isso é coerente com a teoria, pois o tratamento aleatório não tem correlação e nem efeito causal sobre o peso do bebê ao nascer.
+a. A distribuição do SDO aleatorizado se concentra em torno do zero. Isso é coerente com a teoria, pois o tratamento aleatório não tem correlação e nem efeito causal sobre o peso do bebê ao nascer. Assim, o SDO se aproxima do ATE do tratamento aleatório, já que elimina o viés.
 
 b. 
 
@@ -315,9 +313,9 @@ desvio <- sd(sdos, na.rm = TRUE)
 desvio
 ```
 
-O desvio está na mesma ordem de grandeza do erro padrão do coeficiente estimado na regressão.
+O desvio é equivalente ao erro padrão do coeficiente estimado na regressão. 
 
-c. 
+c. O SDO observado é muito maior que o SDO do tratamento aleatório, onde não há viés de seleção.
 
 ## 9. Inferência causal: regressão no contexto de um RTC simulado
 
@@ -337,6 +335,6 @@ modelo_covariada_a <- lm(peso ~ tratamento_aleatorio + idade_mae + escolaridade_
 summary(modelo_covariada_a)
 ```
 
-Os erros padrão de D nos dois modelos permaneceu a mesma, ou seja, incluir as covariadas não melhorou a precisão da estimativa. Isso acontece pois em um RTC, os efeitos das covariadas já são levadas em consideração.
+O erro padrão ddo modelo com as covariadas diminui um pouco. Mesmo o RCT eliminando o viés e a necessidade de controlar variáveis, adicionar covariadas que explicam o resultado podem diminuir a variância da estimativa e melhorar sua precisão.
 
-c. O RCT satifaz a hipótese da independência, que torna os grupos de controle e tratamento comparáveis, o que não acontece no dado observado.  
+c. O RCT satifaz a hipótese da independência, que torna os grupos de controle e tratamento comparáveis, o que não acontece no dado observado, em que há viés de seleção.  

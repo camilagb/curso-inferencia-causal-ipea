@@ -531,10 +531,10 @@ F-statistic:  3450 on 11 and 91444 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>sdo_a <span class="ot">&lt;-</span> <span class="fu">mean</span>(d1_a<span class="sc">$</span>peso) <span class="sc">-</span> <span class="fu">mean</span>(d0_a<span class="sc">$</span>peso)</span>
 <span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>sdo_a</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -2.743945</code></pre>
+<pre><code>[1] 3.703186</code></pre>
 </div>
 </div>
-<p>a . O SDO com tratamento aleatório difere muito do SDO observado, tendendo a zero. Essa diferença nos diz que o tratamento aleatorizado não tem impacto causal no resultado (peso do bebê).</p>
+<p>a . O SDO com tratamento aleatório difere muito do SDO observado, tendendo a zero. Essa diferença nos diz que, como o tratamento aleatorizado não tem nenhum efeito sobre o resultado (peso do bebê), seu ATE é zero, tal qual o SDO, mostrando que o viés de seleção não existe mais.</p>
 <ol start="2" type="a">
 <li></li>
 </ol>
@@ -548,13 +548,13 @@ F-statistic:  3450 on 11 and 91444 DF,  p-value: &lt; 2.2e-16</code></pre>
     Welch Two Sample t-test
 
 data:  idade_mae by tratamento_aleatorio
-t = -0.12443, df = 91454, p-value = 0.901
+t = 0.2216, df = 91448, p-value = 0.8246
 alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
 95 percent confidence interval:
- -0.08961150  0.07891241
+ -0.07473622  0.09379038
 sample estimates:
 mean in group 0 mean in group 1 
-       27.44788        27.45323 </code></pre>
+       27.45535        27.44583 </code></pre>
 </div>
 </div>
 <ul>
@@ -567,13 +567,13 @@ mean in group 0 mean in group 1
     Welch Two Sample t-test
 
 data:  escolaridade_mae_numerico by tratamento_aleatorio
-t = 1.4919, df = 91454, p-value = 0.1357
+t = 0.51224, df = 91451, p-value = 0.6085
 alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
 95 percent confidence interval:
- -0.001800786  0.013279822
+ -0.005569777  0.009511158
 sample estimates:
 mean in group 0 mean in group 1 
-       4.206847        4.201107 </code></pre>
+       4.204957        4.202986 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -587,13 +587,13 @@ mean in group 0 mean in group 1
 <pre><code># A tibble: 2 × 3
   tratamento_aleatorio media_idade media_escolaridade
                  &lt;dbl&gt;       &lt;dbl&gt;              &lt;dbl&gt;
-1                    0        27.4               4.21
-2                    1        27.5               4.20</code></pre>
+1                    0        27.5               4.20
+2                    1        27.4               4.20</code></pre>
 </div>
 </div>
 <p>Os grupos estão bastante equilibrados agora, sendo estatisticamente iguais (p &gt;&gt; 0.05 para o teste que compara as médias nos dois grupos), pois as amostras foram feitas aleatoriamente.</p>
 <ol start="3" type="a">
-<li>O SDO aleatorizado é uma estimativa causal válida, mostranto o efeito do tratamento aleatório sobre o resultado (que é 0). Lembrando que, já que o tratamento foi atribuído aleatoriamente, ele não tem de fato nenhuma relação com o peso observados dos bebês são observados.</li>
+<li>O SDO aleatorizado é uma estimativa causal válida, mostranto o efeito do tratamento aleatório sobre o resultado (que é 0). Lembrando que, já que o tratamento foi atribuído aleatoriamente, ele não tem de fato nenhuma relação com o peso observado dos bebês.</li>
 </ol>
 </section>
 <section id="distribuição-do-estimador-sob-aleatorização" class="level2">
@@ -618,7 +618,7 @@ mean in group 0 mean in group 1
 <span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sdos)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
--13.30160  -2.53731   0.03826  -0.06401   2.34436  10.05027 </code></pre>
+-13.27204  -2.33960   0.02394   0.06119   2.46634  11.74169 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sdos)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>df_sdos <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x=</span>sdos) <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
@@ -631,19 +631,19 @@ mean in group 0 mean in group 1
 </div>
 </div>
 <ol type="a">
-<li><p>A distribuição do SDO aleatorizado se concentra em torno do zero. Isso é coerente com a teoria, pois o tratamento aleatório não tem correlação e nem efeito causal sobre o peso do bebê ao nascer.</p></li>
+<li><p>A distribuição do SDO aleatorizado se concentra em torno do zero. Isso é coerente com a teoria, pois o tratamento aleatório não tem correlação e nem efeito causal sobre o peso do bebê ao nascer. Assim, o SDO se aproxima do ATE do tratamento aleatório, já que elimina o viés.</p></li>
 <li></li>
 </ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>desvio <span class="ot">&lt;-</span> <span class="fu">sd</span>(sdos, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>desvio</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.696412</code></pre>
+<pre><code>[1] 3.505048</code></pre>
 </div>
 </div>
-<p>O desvio está na mesma ordem de grandeza do erro padrão do coeficiente estimado na regressão.</p>
+<p>O desvio é equivalente ao erro padrão do coeficiente estimado na regressão.</p>
 <ol start="3" type="a">
-<li></li>
+<li>O SDO observado é muito maior que o SDO do tratamento aleatório, onde não há viés de seleção.</li>
 </ol>
 </section>
 <section id="inferência-causal-regressão-no-contexto-de-um-rtc-simulado" class="level2">
@@ -661,18 +661,18 @@ lm(formula = peso ~ tratamento_aleatorio, data = t_data)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--2976.8  -266.8    38.2   333.2  3440.9 
+-2977.3  -267.3    37.7   332.7  3437.7 
 
 Coefficients:
                      Estimate Std. Error  t value Pr(&gt;|t|)    
-(Intercept)          3111.815      2.529 1230.539   &lt;2e-16 ***
-tratamento_aleatorio   -2.744      3.570   -0.769    0.442    
+(Intercept)          3108.578      2.530 1228.480   &lt;2e-16 ***
+tratamento_aleatorio    3.703      3.570    1.037      0.3    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 539.8 on 91454 degrees of freedom
-Multiple R-squared:  6.459e-06, Adjusted R-squared:  -4.475e-06 
-F-statistic: 0.5907 on 1 and 91454 DF,  p-value: 0.4421</code></pre>
+Multiple R-squared:  1.176e-05, Adjusted R-squared:  8.301e-07 
+F-statistic: 1.076 on 1 and 91454 DF,  p-value: 0.2996</code></pre>
 </div>
 </div>
 <p>O coeficiente de D não é estatisticamente significativo (<span class="math inline">\(p &gt; 0.05\)</span>). Isso indica que nessa simulação, não há efeito causal e nem correlação entre o peso ao nascer e o tratamento aleatório.</p>
@@ -690,28 +690,28 @@ lm(formula = peso ~ tratamento_aleatorio + idade_mae + escolaridade_mae,
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--2965.6  -267.3    39.3   332.3  3452.2 
+-2966.2  -267.2    39.2   332.2  3449.1 
 
 Coefficients:
                       Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)          2864.2392    70.9045  40.396  &lt; 2e-16 ***
-tratamento_aleatorio   -2.5757     3.5681  -0.722  0.47037    
-idade_mae               1.8555     0.2903   6.391 1.66e-10 ***
-escolaridade_mae1-3   142.4525    74.6856   1.907  0.05648 .  
-escolaridade_mae4-7   146.6924    70.5840   2.078  0.03769 *  
-escolaridade_mae8-11  204.7898    70.3016   2.913  0.00358 ** 
-escolaridade_mae12+   191.5892    70.3204   2.725  0.00644 ** 
+(Intercept)          2860.6479    70.9148  40.339  &lt; 2e-16 ***
+tratamento_aleatorio    3.7417     3.5681   1.049  0.29434    
+idade_mae               1.8554     0.2903   6.391 1.66e-10 ***
+escolaridade_mae1-3   142.8140    74.6862   1.912  0.05586 .  
+escolaridade_mae4-7   147.0896    70.5849   2.084  0.03717 *  
+escolaridade_mae8-11  205.2097    70.3024   2.919  0.00351 ** 
+escolaridade_mae12+   192.0188    70.3212   2.731  0.00632 ** 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 539.5 on 91449 degrees of freedom
-Multiple R-squared:  0.001247,  Adjusted R-squared:  0.001181 
-F-statistic: 19.02 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
+Multiple R-squared:  0.001253,  Adjusted R-squared:  0.001187 
+F-statistic: 19.12 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p>Os erros padrão de D nos dois modelos permaneceu a mesma, ou seja, incluir as covariadas não melhorou a precisão da estimativa. Isso acontece pois em um RTC, os efeitos das covariadas já são levadas em consideração.</p>
+<p>O erro padrão ddo modelo com as covariadas diminui um pouco. Mesmo o RCT eliminando o viés e a necessidade de controlar variáveis, adicionar covariadas que explicam o resultado podem diminuir a variância da estimativa e melhorar sua precisão.</p>
 <ol start="3" type="a">
-<li>O RCT satifaz a hipótese da independência, que torna os grupos de controle e tratamento comparáveis, o que não acontece no dado observado.</li>
+<li>O RCT satifaz a hipótese da independência, que torna os grupos de controle e tratamento comparáveis, o que não acontece no dado observado, em que há viés de seleção.</li>
 </ol>
 </section>
 </section>
