@@ -1,0 +1,69 @@
+---
+title: "Resolução da lista 5"
+subtitle: "Curso de inferência causal"
+author: "Camila Brito"
+format: html
+lang: pt
+---
+
+# Seção I - Questões conceituais e teóricas
+
+## 1. Condições de validade do intrumento
+
+a. Um instrumento válido deve satisfazer as seguintes hipóteses:
+
+- Relevância: o instrumento $Z$ deve ter efeito ou ser correlacionada sobre a variável de interesse $S$, ou seja, $\text{cov}(Z, S) \neq 0$
+
+- Exclusão: o instrumento $Z$ deve afetar o resultado $Y$ apenas através da variável endógena $S$, sem efeitos diretos com fatores não observáveis como o erro $\varepsilon$, ou seja, $\text{cov}(Z, \varepsilon) = 0$
+
+b. A restrição de exclusão é não testável com dados pois é impossível encontrar e medir todas as possíveis variáveis confundidoras e não observavéis para testar a correlação. O pesquisador tem que argumentar teoricamente sua premissa, listando os possíveis outros canais do instrumento ao resultado e porque esses canais são implausíveis.
+
+c. Em relação a usar o trimestre de nascimento como instrumento de educação temos:
+
+- relevância: dados de escolas americanas de fato mostraram que há uma correlação diferente de zero entre as variáveis, em que pessoas que nasceram mais no início do ano tendiam a ter menos anos de educação, porém essa relação pode ser fraca
+- independência: o trimestre de nascimento é aleatório em relação ao salário da pessoa. Saber se um indivíduo está no grupo de tratamento ou controle não me traz novas informações sobre seu trimestre de nascimento.
+- exclusão: nos diz que a única forma que o trimestre de nascimento afeta os salários é através dos anos de educação. Mas pode ser que uma pessoa que virou maior de idade mais cedo teve acesso a uma oportunidade de profissionalização que uma pessoa mais nova não teve, afetando seu salário. Além disso, um aluno mais velho pode ter uma experiência escolar diferente.
+- monotonicidade: o tirimestre de nascimento das pessoas afetam os anos de escolaridade na mesma direção para todos os participantes.
+
+A ameaça mais séria seria a quebra da hipótese de exclusão, onde existem canais do instrumento (trimestre) ao resultado (salário) que não passam pelo tratamento (escolaridade).
+
+## 2. Estimador de Wald e intuição do MQ2E
+
+Considerando $Y_i = \alpha + \delta * S_i + \varepsilon_i$, com $S_i$ endógena e instrumento $Z_i$ binário.
+
+a. Sabendo que $\text{cov}(Y_i, Z_i) = \delta * \text{cov}(S_i, Z_i) + \text{cov}(\varepsilon_i, Z_i)$, chegar em $\delta_{Wald} = \frac{E[Y|Z=1] - E[Y|Z=0]}{E[S|Z=1] - E[S|Z=0]}$.
+
+I. a hipótese de validade do instrumento que permite eliminar o termo $\text{cov}(\varepsilon_i, Z_i)$ é a da restrição de exclusão. Ela diz que  o instrumento $Z$ deve afetar o resultado $Y$ apenas através da variável endógena $S$, sem efeitos diretos com fatores não observáveis que compõe o erro $\varepsilon$, ou seja, $\text{cov}(Z, \varepsilon) = 0$.
+
+II. Sabendo que $\text{cov}(\varepsilon_i, Z_i) = 0$, podemos dizer que $\delta = \frac{\text{cov}(Y_i, Z_i)}{\text{cov}(S_i, Z_i)}$. Essa razão só é bem definida se $\text{cov}(S_i, Z_i) \neq 0$. Essa condição nos mostra a hipótese de relevância.
+
+III. 
+
+V. Dividir um pelo outro recupera o valor de $\delta$ porque eu consigo estimar o efeito do instrumento $Z$ no resultado $Y$ e escalar esse efeito pelo efeito do instrumento $Z$ no tratamento $S$. As hipóteses usadas na derivação foram as de exclusão e relevância.
+
+b. O numerador ou forma reduzida representa o impacto do instrumento $Z$ no resultado $Y$, ou seja, a regressão de $Y$ em $Z$. Já o denominador ou primeiro estágio representa o impacto do instrumento $Z$ no tratamento $S$, ou seja, a regressão de $S$ em $Z$.
+
+c. Essa substituição, em que $\hat{S}_i = \hat{\alpha}_0 + \hat{\alpha}_1 Z_i + \eta$, resolve a endogeneidade ao garantir que $Z$ não está correlacionada com o termo de erro da regressão, ou seja $\text{cov}(Z, \eta) = 0$. Dessa forma, descartamos o resíduo $\eta$ e a variação de $S$ mantida é apenas aquela causada pelo instrumento, sem variáveis confundidoras.
+
+## 3. Instrumentos fracos e vies
+
+a. Quando $F$ tende ao infinito (instrumento forte), o viés tende a zero. Já quando $F$ tende a zero (instrumento fraco) o viés tende a $\frac{\sigma_{v\varepsilon}}{\sigma_{\eta}^2}$. Esse é o mesmo viés do MQO, ou seja, quando o instrumento é fraco, o seu viés tende ao víes da regressão direta.
+
+b. 
+
+## 4. Cumprimento imperfeito e tipos de compliance
+
+a. Os quatro tipos de participantes são:
+
+- compliers: seguem o tratamento de acordo com a designação, ou seja, $T_i(0) = 0$ e $T_i(1) = 1$. No exemplo do sorteio da guerra do Vietnã, são as pessoas que só se alistarão se forem sorteadas e não se alistarão se não forem.
+- never takers: nunca seguem o tratamento, independente da designação, ou seja, $T_i(0) = T_i(1) = 0$. No exemplo do sorteio da guerra do Vietnã, são as pessoas que nunca se alistarão, nem se forem sorteadas.
+- always takers: sempre seguem o tratamento, independente da designação, ou seja, $T_i(0) = T_i(1) = 1$. No exemplo do sorteio da guerra do Vietnã, são as pessoas que vão se alistar, independente do resultado do sorteio.
+- defiers: seguem o tratamento ao contrário do que diz a designação, ou seja, $T_i(0) = 1$ e $T_i(1) = 0$. No exemplo do sorteio da guerra do Vietnã, são as pessoas que só vão se alistar se não forem sorteadas e as que não vão se alistar se forem sorteadas.
+
+b. A hipótese de monotonicidade diz que o do instrumento não deve aumentar $T$ para uns e diminuir para outros, ou seja, $T_i(1) > T_i(0)$. Ela exclui os defiers. Ela é necessária para identificar o LATE pois garante que o efeito calculado não mistura efeitos causais opostos e se restrinja apenas aos compliers.
+
+c. Always takers e never takers não contribuem para a estimativa de IV pois seu comportamento não é alterado pelo instrumento. Isso mostra justamente que o efeito calculado pelo instrumento, o LATE, se restringe apenas a um grupo, os compliers, representando um efeito local e não populacional, afetando a validade externa do tratamento (não necessariamente é generalizável). 
+
+## 5. LATE, ITT e relevância para políticas públicas
+
+## 6. Restrição de exclusão na prática
