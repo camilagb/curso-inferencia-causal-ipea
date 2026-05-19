@@ -1,0 +1,235 @@
+---
+title: "Resolução da lista 6"
+subtitle: "Curso de inferência causal"
+author: "Camila Brito"
+format: html
+lang: pt
+execute:
+    warning: false
+---
+
+```{r}
+# carregando os pacotes
+library(microdatasus) 
+library(dplyr) 
+library(ggplot2)
+library(AER)
+
+# lendo os dados
+data <- fetch_datasus(
+    year_start = 2023, month_start = 1, year_end = 2023, month_end = 12, 
+    information_system = "SINASC", uf = "GO"
+)
+```
+
+# Seção I - Preparação dos dados e construção do instrumento
+
+## 1. Carregamento e construção do instrumento municipal
+
+a. Seleção das colunas necessárias, de acordo com a [referência](https://dive.sc.gov.br/phocadownload/SINASC/Manuais%20e%20Instrutivos/dicionario-de-dados_SINASC.pdf) e criação da variável de tratamento `pre_natal_adequado`.
+
+```{r}
+s_data <- data |>
+    select(PESO, IDADEMAE, ESCMAE, CONSULTAS, GESTACAO, CODMUNRES) |>
+    mutate(
+        peso = as.numeric(PESO),
+        idade_mae = as.numeric(IDADEMAE),
+        escolaridade_mae_numerico = as.numeric(ESCMAE),
+        escolaridade_mae = factor(
+        ESCMAE,
+        levels = c('1', '2', '3', '4', '5', '9'),
+        labels = c('Nenhuma', '1-3', '4-7', '8-11','12+', 'ignorado'),
+        # ordered = TRUE  
+        ),
+        consultas = as.numeric(CONSULTAS),
+        consultas_factor = factor(
+        CONSULTAS,
+        levels = c('1', '2', '3', '4', '9'),
+        labels = c('Nenhuma', '1-3', '4-6', '7+', 'ignorado'),
+        ordered = TRUE
+        ),
+        semanas_gestacao = factor(
+            GESTACAO,
+            levels = c('1', '2', '3', '4', '5', '6', '9'),
+            labels = c('menos 22', '22-27', '28-31', '32-36', '37-41', '42+', 'ignorado')
+        ),
+        codigo_municipio = CODMUNRES
+    ) |>
+    select(peso, idade_mae, escolaridade_mae_numerico, escolaridade_mae, consultas, consultas_factor, semanas_gestacao, codigo_municipio) |>
+    na.omit() |>
+    # removendo as colunas marcadas como 'ignorado'
+    filter(consultas != 9 & escolaridade_mae != 'ignorado') |>
+    # criando a variável de tratamento
+    mutate(
+        pre_natal_adequado = ifelse(consultas == 4, 1, 0)
+    )
+```
+
+b. 
+
+```{r}
+t_data <- s_data |>
+    group_by(codigo_municipio) |>
+    mutate(
+        Z_mun = mean(pre_natal_adequado, na.rm = TRUE)
+    )
+
+# quantidade de municípios distintos
+length(unique(t_data$codigo_municipio))
+
+# distribuição do instrumento
+summary(t_data$Z_mun)
+
+# desvio padrão do instrumento
+sd(t_data$Z_mun)
+```
+
+c. 
+
+```{r}
+histograma <- t_data |>
+  ggplot() +
+  aes(x = Z_mun) +
+  geom_histogram(binwidth = 0.05)
+
+histograma
+```
+
+Existem municípios com cobertura muito baixa,configurando um outlier em torno de 0.3. Também existem municípios com cobertura muita alta, em 100%. A maioria dos valores, no entanto, está por volta de 0.75. Essa heterogeneidade pode se dar por diversos motivos, como se o município é urbano ou rural, o alcance dos serviços de saúde, a quantidade de mulheres grávidas em cada local etc.
+
+## 2. Verificação do primeiro estágio
+
+a.
+
+```{r}
+primeiro_estagio <- lm(pre_natal_adequado ~ Z_mun + escolaridade_mae + idade_mae, data = t_data)
+summary(primeiro_estagio)
+```
+
+No primeiro estágio, o coeficiente do instrumento nos diz o impacto do instrumento no tratamento. Nesse caso, o coeficiente $\beta = 0.95$, estatisticamente significativo (p << 0.05), nos diz que a relação entre entre instrumento e tratamento é positiva e que cada unidade de aumento do instrumento aumenta em 0.95 o tratamento (ou que o aumento de 1% no intrumento, aumenta o tratamento em 0.0095 o tratamento, que é dummy). 
+A estatística F é de 1122, passando tanto no critério histórico de F > 10 quanto no critério de Lee at al. Isso mostra que nosso instrumento é forte.
+
+b. É esperado ver uma linha perfeitamente linear, visto que a variável de instrumento Z_mun é justamente a média do tratamento (mães com pré natal adequado) por município.
+
+```{r}
+data_munic <- t_data |>
+    group_by(codigo_municipio) |>
+    mutate(
+        media_tratamento = mean(pre_natal_adequado)
+    )
+
+dispersao <- data_munic |> ggplot() + aes(x = Z_mun, y = media_tratamento) + geom_point()
+dispersao
+```
+
+c. Um primeiro estágio fraco implicaria um instrumento fraco. Usando a fórmula com F = 2, o viés tenderia a $\frac{\sigma_{v\varepsilon}}{\sigma_{\eta}^2} * \frac{1}{3}$, que é um terço do viés do MQO, herdado pelo intrumento.
+
+# Seção II - Estimação de IV e Comparação com MQO
+
+## 3. Forma reduzida e razão de Wald
+
+a. 
+
+```{r}
+forma_reduzida <- lm(peso ~ Z_mun + escolaridade_mae + idade_mae, data = t_data)
+summary(forma_reduzida)
+```
+
+O coeficiente do instrumento na forma reduzida nos diz o impacto do instrumento na variável resposta. Nesse caso, o coeficiente $\beta = 13.65$, que não é estatisticamente significativo (p > 0.05), nos diz que a relação entre entre instrumento e resultado é positiva e que cada unidade de aumento do instrumento aumenta em 13.65g o peso ao nascer (resultado).
+
+b. 
+
+A razão de Wald é dada por
+```{r}
+wald = forma_reduzida$coefficients["Z_mun"][[1]]/primeiro_estagio$coefficients["Z_mun"][[1]]
+wald
+```
+
+Já o coeficiente de tratamento no MQO é dado por
+```{r}
+regressao_simples = lm(peso ~ pre_natal_adequado + escolaridade_mae + idade_mae, data = t_data)
+regressao_simples$coefficients["pre_natal_adequado"][[1]]
+```
+
+A razão de Wald é muito menor.
+
+c. 
+```{r}
+
+d0 <- t_data |> filter(pre_natal_adequado == 0)
+d1 <- t_data |> filter(pre_natal_adequado == 1)
+
+sdo <- mean(d1$peso) - mean(d0$peso)
+sdo
+```
+
+A razão de Wald é bem menor que o SDO observacional. Supondo que nosso intrumento é válido e o seu efeito é homogêneo, a razão de Wald seria um bom estimador de ATT. Consideranto que $SDO = ATT + viés$, como Wald é bem menor que SDO, o sinal do viés é positivo. Caso fosse maior, o sinal do viés seria negativo.
+
+## 4. MQO vs MQ2E
+
+a. 
+
+O MQO é dado por
+```{r}
+regressao_simples = lm(peso ~ pre_natal_adequado + escolaridade_mae + idade_mae, data = t_data)
+summary(regressao_simples)
+```
+
+O MQ2E é dado por
+```{r}
+regressao_iv = ivreg(peso ~ pre_natal_adequado + escolaridade_mae + idade_mae |
+    Z_mun + escolaridade_mae + idade_mae, data = t_data)
+summary(regressao_iv, diagnostics = TRUE)
+```
+
+b.
+
+c. O coeficiente D no modelo IV não é casualmente interpretável. As hipóteses que precisam ser válidas são
+- relevância, o instrumento impacta o tratamento
+- exclusão, a única forma que o intrumento (proporção média de mães com pré natal adequado por município) impacta no resultado é pelo tratamento
+- independência, o instrumento é aleatório em relação ao resultado
+- monotonicidade, o instrumento afeta o tratamento na mesma direção para todos
+
+As principais ameaças à validade causal nesse contexto são as hipóteses de exclusão e de independência.
+- ameaça à indepedência: o instrumento não é aleatório em relaçãoao resultado, ou seja, não é exógeno. Mulheres de municípios com maior cobertura podem também ter mais acesso à educação, alimentação de melhor qualidade etc, tornando os grupos não comparáveis
+- ameaça à exclusão: o intrumento pode influenciar o resultado de outras formas que não através so tratamento
+
+
+## 5. LAte e interpretação dos resultados
+
+a. A proporção de compliers pode ser aproximado pelo coeficiente do primeiro estágio:
+
+\begin{align}
+p(compliers) = \frac{ITT}{ATE} \\
+p(compliers) = \frac{forma reduzida}{forma reduzida/primeiro estagio} \\
+p(compliers) = primeiro estagio
+\end{align}
+
+
+```{r}
+coef(lm(pre_natal_adequado ~ Z_mun, data = t_data))['Z_mun']
+```
+
+b. 
+
+c. 
+
+
+```{r}
+metodos <- c('SDO bruto', 'MQO com controles', 'IV')
+coeficientes <- c(sdo, regressao_simples$coefficients["pre_natal_adequado"][[1]], regressao_iv$coefficients["pre_natal_adequado"][[1]])
+erros <- c(
+    NA,
+    coef(summary(regressao_simples))[, "Std. Error"]["pre_natal_adequado"][[1]],
+    coef(summary(regressao_iv))[, "Std. Error"]["pre_natal_adequado"][[1]]) 
+est_f <- c(
+    NA,
+    summary(regressao_simples)$fstatistic['value'][[1]],
+    summary(primeiro_estagio)$fstatistic['value'][[1]]
+) 
+
+tabela <- data.frame(metodo = metodos, coeficiente = coeficientes, erro = erros, F = est_f)
+tabela
+```
+
+O método mais confiável é o MQO com controles.
