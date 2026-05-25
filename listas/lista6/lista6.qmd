@@ -2,7 +2,7 @@
 title: "Resolução da lista 6"
 subtitle: "Curso de inferência causal"
 author: "Camila Brito"
-format: html
+format: pdf
 lang: pt
 execute:
     warning: false
@@ -55,7 +55,8 @@ s_data <- data |>
         ),
         codigo_municipio = CODMUNRES
     ) |>
-    select(peso, idade_mae, escolaridade_mae_numerico, escolaridade_mae, consultas, consultas_factor, semanas_gestacao, codigo_municipio) |>
+    select(peso, idade_mae, escolaridade_mae_numerico, escolaridade_mae,
+        consultas, consultas_factor, semanas_gestacao, codigo_municipio) |>
     na.omit() |>
     # removendo as colunas marcadas como 'ignorado'
     filter(consultas != 9 & escolaridade_mae != 'ignorado') |>
@@ -95,19 +96,20 @@ histograma <- t_data |>
 histograma
 ```
 
-Existem municípios com cobertura muito baixa,configurando um outlier em torno de 0.3. Também existem municípios com cobertura muita alta, em 100%. A maioria dos valores, no entanto, está por volta de 0.75. Essa heterogeneidade pode se dar por diversos motivos, como se o município é urbano ou rural, o alcance dos serviços de saúde, a quantidade de mulheres grávidas em cada local etc.
+Existem municípios com cobertura muito baixa,configurando um outlier em torno de 0.3. Também existem municípios com cobertura muita alta, em 100%. A maioria dos valores, no entanto, está por volta de 0.75. Essa heterogeneidade pode se dar por diversos motivos, como se o município é urbano ou rural, municípioso alcance dos serviços de saúde, a quantidade de mulheres grávidas em cada local etc.
 
 ## 2. Verificação do primeiro estágio
 
 a.
 
 ```{r}
-primeiro_estagio <- lm(pre_natal_adequado ~ Z_mun + escolaridade_mae + idade_mae, data = t_data)
+primeiro_estagio <- lm(
+    pre_natal_adequado ~ Z_mun + escolaridade_mae + idade_mae, data = t_data)
 summary(primeiro_estagio)
 ```
 
 No primeiro estágio, o coeficiente do instrumento nos diz o impacto do instrumento no tratamento. Nesse caso, o coeficiente $\beta = 0.95$, estatisticamente significativo (p << 0.05), nos diz que a relação entre entre instrumento e tratamento é positiva e que cada unidade de aumento do instrumento aumenta em 0.95 o tratamento (ou que o aumento de 1% no intrumento, aumenta o tratamento em 0.0095 o tratamento, que é dummy). 
-A estatística F é de 1122, passando tanto no critério histórico de F > 10 quanto no critério de Lee at al. Isso mostra que nosso instrumento é forte.
+A estatística F é de 1122, passando tanto no critério histórico de F > 10 quanto no critério de Lee at al. Isso mostra que nosso instrumento é forte/relevante.
 
 b. É esperado ver uma linha perfeitamente linear, visto que a variável de instrumento Z_mun é justamente a média do tratamento (mães com pré natal adequado) por município.
 
@@ -118,7 +120,8 @@ data_munic <- t_data |>
         media_tratamento = mean(pre_natal_adequado)
     )
 
-dispersao <- data_munic |> ggplot() + aes(x = Z_mun, y = media_tratamento) + geom_point()
+dispersao <- data_munic |>
+    ggplot() + aes(x = Z_mun, y = media_tratamento) + geom_point()
 dispersao
 ```
 
@@ -131,11 +134,12 @@ c. Um primeiro estágio fraco implicaria um instrumento fraco. Usando a fórmula
 a. 
 
 ```{r}
-forma_reduzida <- lm(peso ~ Z_mun + escolaridade_mae + idade_mae, data = t_data)
+forma_reduzida <- lm(
+    peso ~ Z_mun + escolaridade_mae + idade_mae, data = t_data)
 summary(forma_reduzida)
 ```
 
-O coeficiente do instrumento na forma reduzida nos diz o impacto do instrumento na variável resposta. Nesse caso, o coeficiente $\beta = 13.65$, que não é estatisticamente significativo (p > 0.05), nos diz que a relação entre entre instrumento e resultado é positiva e que cada unidade de aumento do instrumento aumenta em 13.65g o peso ao nascer (resultado).
+O coeficiente do instrumento na forma reduzida nos diz o impacto do instrumento na variável resposta. Nesse caso, o coeficiente $\beta = 13.65$, que não é estatisticamente significativo (p > 0.05), nos diz que a relação entre entre instrumento e resultado é positiva e que cada unidade de aumento do instrumento aumenta em 13.65g o peso ao nascer (resultado). Ou seja, o impacto do instrumento no resultado não é relevante.
 
 b. 
 
@@ -147,11 +151,12 @@ wald
 
 Já o coeficiente de tratamento no MQO é dado por
 ```{r}
-regressao_simples = lm(peso ~ pre_natal_adequado + escolaridade_mae + idade_mae, data = t_data)
+regressao_simples = lm(
+    peso ~ pre_natal_adequado + escolaridade_mae + idade_mae, data = t_data)
 regressao_simples$coefficients["pre_natal_adequado"][[1]]
 ```
 
-A razão de Wald é muito menor.
+A razão de Wald é muito menor, próxima de zero, mostrando que o impacto de consultas pré-natal no peso é muito baixa e que o valor estimado por MQO tem viés de seleção.
 
 c. 
 ```{r}
@@ -163,7 +168,7 @@ sdo <- mean(d1$peso) - mean(d0$peso)
 sdo
 ```
 
-A razão de Wald é bem menor que o SDO observacional. Supondo que nosso intrumento é válido e o seu efeito é homogêneo, a razão de Wald seria um bom estimador de ATT. Consideranto que $SDO = ATT + viés$, como Wald é bem menor que SDO, o sinal do viés é positivo. Caso fosse maior, o sinal do viés seria negativo.
+A razão de Wald é bem menor que o SDO observacional. Supondo que nosso intrumento é válido e o seu efeito é homogêneo, a razão de Wald seria um bom estimador de ATT. Consideranto que $SDO = ATT + viés$, como Wald é bem menor que SDO, o sinal do viés é **positivo**. Isso mostra que mães que fazem mais consultas pré-natal tendem a ter bebês mais pesados independente das consultas.
 
 ## 4. MQO vs MQ2E
 
@@ -171,7 +176,8 @@ a.
 
 O MQO é dado por
 ```{r}
-regressao_simples = lm(peso ~ pre_natal_adequado + escolaridade_mae + idade_mae, data = t_data)
+regressao_simples = lm(
+    peso ~ pre_natal_adequado + escolaridade_mae + idade_mae, data = t_data)
 summary(regressao_simples)
 ```
 
@@ -179,23 +185,30 @@ O MQ2E é dado por
 ```{r}
 regressao_iv = ivreg(peso ~ pre_natal_adequado + escolaridade_mae + idade_mae |
     Z_mun + escolaridade_mae + idade_mae, data = t_data)
-summary(regressao_iv, diagnostics = TRUE)
+summary(regressao_iv)
 ```
 
 b.
 
-c. O coeficiente D no modelo IV não é casualmente interpretável. As hipóteses que precisam ser válidas são
+```{r}
+summary(regressao_iv, diagnostics = TRUE)
+```
+
+- Weak instruments mede a relevância do instrumento com a estatística F (a hipótese nula é de que o instrumento é fraco): no nosso caso, F = 2297 e p << 0.05, mostrando que temos um instrumento forte
+- O teste de Wu-Hausman mede a endogeneidade do tratamento e a consequente necessidade de um intrumento (a hipótese nula é de que o tratamento é exógeno): no nosso caso, como p << 0.05, rejeitamos a exogeneidade e entendemos que o tratamento é endógeno.   
+
+c. O coeficiente D no modelo IV não é necessariamente casualmente interpretável. As hipóteses que precisam ser válidas são
 - relevância, o instrumento impacta o tratamento
 - exclusão, a única forma que o intrumento (proporção média de mães com pré natal adequado por município) impacta no resultado é pelo tratamento
 - independência, o instrumento é aleatório em relação ao resultado
 - monotonicidade, o instrumento afeta o tratamento na mesma direção para todos
 
 As principais ameaças à validade causal nesse contexto são as hipóteses de exclusão e de independência.
-- ameaça à indepedência: o instrumento não é aleatório em relaçãoao resultado, ou seja, não é exógeno. Mulheres de municípios com maior cobertura podem também ter mais acesso à educação, alimentação de melhor qualidade etc, tornando os grupos não comparáveis
-- ameaça à exclusão: o intrumento pode influenciar o resultado de outras formas que não através so tratamento
+- ameaça à exclusão: o instrumento (cobertura municipal) pode influenciar o resultado de outras formas que não através do tratamento.Mulheres de municípios com maior cobertura podem também ter mais acesso à educação, alimentação de melhor qualidade etc.
+- ameaça à indepedência: o instrumento não é aleatório em relação ao resultado, ou seja, não é exógeno, tornando os grupos não comparáveis
 
 
-## 5. LAte e interpretação dos resultados
+## 5. LATE e interpretação dos resultados
 
 a. A proporção de compliers pode ser aproximado pelo coeficiente do primeiro estágio:
 
@@ -205,31 +218,35 @@ p(compliers) = \frac{forma reduzida}{forma reduzida/primeiro estagio} \\
 p(compliers) = primeiro estagio
 \end{align}
 
-
 ```{r}
 coef(lm(pre_natal_adequado ~ Z_mun, data = t_data))['Z_mun']
 ```
 
-b. 
+A proporção de compliers é 1, a decisão da mãe buscar pré-natal adequado é unfluenciada pela oferta municipal.
 
 c. 
 
-
 ```{r}
 metodos <- c('SDO bruto', 'MQO com controles', 'IV')
-coeficientes <- c(sdo, regressao_simples$coefficients["pre_natal_adequado"][[1]], regressao_iv$coefficients["pre_natal_adequado"][[1]])
+coeficientes <- c(
+    sdo,
+    regressao_simples$coefficients["pre_natal_adequado"][[1]],
+    regressao_iv$coefficients["pre_natal_adequado"][[1]]
+)
 erros <- c(
-    NA,
+    sqrt(sd(d1$peso)^2/nrow(d1) + sd(d0$peso)^2/nrow(d0)),
     coef(summary(regressao_simples))[, "Std. Error"]["pre_natal_adequado"][[1]],
-    coef(summary(regressao_iv))[, "Std. Error"]["pre_natal_adequado"][[1]]) 
+    coef(summary(regressao_iv))[, "Std. Error"]["pre_natal_adequado"][[1]]
+) 
 est_f <- c(
     NA,
-    summary(regressao_simples)$fstatistic['value'][[1]],
+    NA,
     summary(primeiro_estagio)$fstatistic['value'][[1]]
 ) 
 
-tabela <- data.frame(metodo = metodos, coeficiente = coeficientes, erro = erros, F = est_f)
+tabela <- data.frame(
+    metodo = metodos, coeficiente = coeficientes, erro = erros, F = est_f)
 tabela
 ```
 
-O método mais confiável é o MQO com controles.
+O método mais confiável é o IV. Apesar de ter problemas na hipótese de exclusão e não ser relevante do ponto de vista de impacto no resultado, mostrou que o MQO estava muito enviesado.

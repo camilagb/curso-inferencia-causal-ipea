@@ -237,7 +237,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Existem municípios com cobertura muito baixa,configurando um outlier em torno de 0.3. Também existem municípios com cobertura muita alta, em 100%. A maioria dos valores, no entanto, está por volta de 0.75. Essa heterogeneidade pode se dar por diversos motivos, como se o município é urbano ou rural, o alcance dos serviços de saúde, a quantidade de mulheres grávidas em cada local etc.</p>
+<p>Existem municípios com cobertura muito baixa,configurando um outlier em torno de 0.3. Também existem municípios com cobertura muita alta, em 100%. A maioria dos valores, no entanto, está por volta de 0.75. Essa heterogeneidade pode se dar por diversos motivos, como se o município é urbano ou rural, municípioso alcance dos serviços de saúde, a quantidade de mulheres grávidas em cada local etc.</p>
 </section>
 <section id="verificação-do-primeiro-estágio" class="level2">
 <h2 class="anchored" data-anchor-id="verificação-do-primeiro-estágio">2. Verificação do primeiro estágio</h2>
@@ -274,7 +274,7 @@ Multiple R-squared:  0.06857,   Adjusted R-squared:  0.06851
 F-statistic:  1122 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p>No primeiro estágio, o coeficiente do instrumento nos diz o impacto do instrumento no tratamento. Nesse caso, o coeficiente <span class="math inline">\(\beta = 0.95\)</span>, estatisticamente significativo (p &lt;&lt; 0.05), nos diz que a relação entre entre instrumento e tratamento é positiva e que cada unidade de aumento do instrumento aumenta em 0.95 o tratamento (ou que o aumento de 1% no intrumento, aumenta o tratamento em 0.0095 o tratamento, que é dummy). A estatística F é de 1122, passando tanto no critério histórico de F &gt; 10 quanto no critério de Lee at al.&nbsp;Isso mostra que nosso instrumento é forte.</p>
+<p>No primeiro estágio, o coeficiente do instrumento nos diz o impacto do instrumento no tratamento. Nesse caso, o coeficiente <span class="math inline">\(\beta = 0.95\)</span>, estatisticamente significativo (p &lt;&lt; 0.05), nos diz que a relação entre entre instrumento e tratamento é positiva e que cada unidade de aumento do instrumento aumenta em 0.95 o tratamento (ou que o aumento de 1% no intrumento, aumenta o tratamento em 0.0095 o tratamento, que é dummy). A estatística F é de 1122, passando tanto no critério histórico de F &gt; 10 quanto no critério de Lee at al.&nbsp;Isso mostra que nosso instrumento é forte/relevante.</p>
 <ol start="2" type="a">
 <li>É esperado ver uma linha perfeitamente linear, visto que a variável de instrumento Z_mun é justamente a média do tratamento (mães com pré natal adequado) por município.</li>
 </ol>
@@ -336,7 +336,7 @@ Multiple R-squared:  0.001244,  Adjusted R-squared:  0.001178
 F-statistic: 18.98 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p>O coeficiente do instrumento na forma reduzida nos diz o impacto do instrumento na variável resposta. Nesse caso, o coeficiente <span class="math inline">\(\beta = 13.65\)</span>, que não é estatisticamente significativo (p &gt; 0.05), nos diz que a relação entre entre instrumento e resultado é positiva e que cada unidade de aumento do instrumento aumenta em 13.65g o peso ao nascer (resultado).</p>
+<p>O coeficiente do instrumento na forma reduzida nos diz o impacto do instrumento na variável resposta. Nesse caso, o coeficiente <span class="math inline">\(\beta = 13.65\)</span>, que não é estatisticamente significativo (p &gt; 0.05), nos diz que a relação entre entre instrumento e resultado é positiva e que cada unidade de aumento do instrumento aumenta em 13.65g o peso ao nascer (resultado). Ou seja, o impacto do instrumento no resultado não é relevante.</p>
 <ol start="2" type="a">
 <li></li>
 </ol>
@@ -356,7 +356,7 @@ F-statistic: 18.98 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre><code>[1] 169.3126</code></pre>
 </div>
 </div>
-<p>A razão de Wald é muito menor.</p>
+<p>A razão de Wald é muito menor, próxima de zero, mostrando que o impacto de consultas pré-natal no peso é muito baixa e que o valor estimado por MQO tem viés de seleção.</p>
 <ol start="3" type="a">
 <li></li>
 </ol>
@@ -370,7 +370,7 @@ F-statistic: 18.98 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre><code>[1] 167.4577</code></pre>
 </div>
 </div>
-<p>A razão de Wald é bem menor que o SDO observacional. Supondo que nosso intrumento é válido e o seu efeito é homogêneo, a razão de Wald seria um bom estimador de ATT. Consideranto que <span class="math inline">\(SDO = ATT + viés\)</span>, como Wald é bem menor que SDO, o sinal do viés é positivo. Caso fosse maior, o sinal do viés seria negativo.</p>
+<p>A razão de Wald é bem menor que o SDO observacional. Supondo que nosso intrumento é válido e o seu efeito é homogêneo, a razão de Wald seria um bom estimador de ATT. Consideranto que <span class="math inline">\(SDO = ATT + viés\)</span>, como Wald é bem menor que SDO, o sinal do viés é <strong>positivo</strong>. Isso mostra que mães que fazem mais consultas pré-natal tendem a ter bebês mais pesados independente das consultas.</p>
 </section>
 <section id="mqo-vs-mq2e" class="level2">
 <h2 class="anchored" data-anchor-id="mqo-vs-mq2e">4. MQO vs MQ2E</h2>
@@ -412,7 +412,39 @@ F-statistic:   287 on 6 and 91449 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>regressao_iv <span class="ot">=</span> <span class="fu">ivreg</span>(peso <span class="sc">~</span> pre_natal_adequado <span class="sc">+</span> escolaridade_mae <span class="sc">+</span> idade_mae <span class="sc">|</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    Z_mun <span class="sc">+</span> escolaridade_mae <span class="sc">+</span> idade_mae, <span class="at">data =</span> t_data)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(regressao_iv, <span class="at">diagnostics =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(regressao_iv)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+ivreg(formula = peso ~ pre_natal_adequado + escolaridade_mae + 
+    idade_mae | Z_mun + escolaridade_mae + idade_mae, data = t_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2966.6  -267.2    39.1   331.1  3462.8 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          2857.8977    71.4184  40.016  &lt; 2e-16 ***
+pre_natal_adequado     14.3976    27.1868   0.530  0.59640    
+escolaridade_mae1-3   142.1492    74.5830   1.906  0.05666 .  
+escolaridade_mae4-7   145.9122    70.4998   2.070  0.03848 *  
+escolaridade_mae8-11  201.9665    70.4076   2.869  0.00412 ** 
+escolaridade_mae12+   187.1429    70.7267   2.646  0.00815 ** 
+idade_mae               1.7559     0.3453   5.085 3.68e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 538.8 on 91449 degrees of freedom
+Multiple R-Squared: 0.004048,   Adjusted R-squared: 0.003983 
+Wald test: 19.04 on 6 and 91449 DF,  p-value: &lt; 2.2e-16 </code></pre>
+</div>
+</div>
+<ol start="2" type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(regressao_iv, <span class="at">diagnostics =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -446,9 +478,12 @@ Multiple R-Squared: 0.004048,   Adjusted R-squared: 0.003983
 Wald test: 19.04 on 6 and 91449 DF,  p-value: &lt; 2.2e-16 </code></pre>
 </div>
 </div>
-<ol start="2" type="a">
-<li></li>
-<li>O coeficiente D no modelo IV não é casualmente interpretável. As hipóteses que precisam ser válidas são</li>
+<ul>
+<li>Weak instruments mede a relevância do instrumento com a estatística F (a hipótese nula é de que o instrumento é fraco): no nosso caso, F = 2297 e p &lt;&lt; 0.05, mostrando que temos um instrumento forte</li>
+<li>O teste de Wu-Hausman mede a endogeneidade do tratamento e a consequente necessidade de um intrumento (a hipótese nula é de que o tratamento é exógeno): no nosso caso, como p &lt;&lt; 0.05, rejeitamos a exogeneidade e entendemos que o tratamento é endógeno.</li>
+</ul>
+<ol start="3" type="a">
+<li>O coeficiente D no modelo IV não é necessariamente casualmente interpretável. As hipóteses que precisam ser válidas são</li>
 </ol>
 <ul>
 <li>relevância, o instrumento impacta o tratamento</li>
@@ -456,10 +491,10 @@ Wald test: 19.04 on 6 and 91449 DF,  p-value: &lt; 2.2e-16 </code></pre>
 <li>independência, o instrumento é aleatório em relação ao resultado</li>
 <li>monotonicidade, o instrumento afeta o tratamento na mesma direção para todos</li>
 </ul>
-<p>As principais ameaças à validade causal nesse contexto são as hipóteses de exclusão e de independência. - ameaça à indepedência: o instrumento não é aleatório em relaçãoao resultado, ou seja, não é exógeno. Mulheres de municípios com maior cobertura podem também ter mais acesso à educação, alimentação de melhor qualidade etc, tornando os grupos não comparáveis - ameaça à exclusão: o intrumento pode influenciar o resultado de outras formas que não através so tratamento</p>
+<p>As principais ameaças à validade causal nesse contexto são as hipóteses de exclusão e de independência. - ameaça à exclusão: o instrumento (cobertura municipal) pode influenciar o resultado de outras formas que não através do tratamento.Mulheres de municípios com maior cobertura podem também ter mais acesso à educação, alimentação de melhor qualidade etc. - ameaça à indepedência: o instrumento não é aleatório em relação ao resultado, ou seja, não é exógeno, tornando os grupos não comparáveis</p>
 </section>
 <section id="late-e-interpretação-dos-resultados" class="level2">
-<h2 class="anchored" data-anchor-id="late-e-interpretação-dos-resultados">5. LAte e interpretação dos resultados</h2>
+<h2 class="anchored" data-anchor-id="late-e-interpretação-dos-resultados">5. LATE e interpretação dos resultados</h2>
 <ol type="a">
 <li>A proporção de compliers pode ser aproximado pelo coeficiente do primeiro estágio:</li>
 </ol>
@@ -469,39 +504,39 @@ p(compliers) = \frac{forma reduzida}{forma reduzida/primeiro estagio} \\
 p(compliers) = primeiro estagio
 \end{align}\]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">lm</span>(pre_natal_adequado <span class="sc">~</span> Z_mun, <span class="at">data =</span> t_data))[<span class="st">'Z_mun'</span>]</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">lm</span>(pre_natal_adequado <span class="sc">~</span> Z_mun, <span class="at">data =</span> t_data))[<span class="st">'Z_mun'</span>]</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Z_mun 
     1 </code></pre>
 </div>
 </div>
-<ol start="2" type="a">
-<li></li>
+<p>A proporção de compliers é 1, a decisão da mãe buscar pré-natal adequado é unfluenciada pela oferta municipal.</p>
+<ol start="3" type="a">
 <li></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>metodos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'SDO bruto'</span>, <span class="st">'MQO com controles'</span>, <span class="st">'IV'</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>coeficientes <span class="ot">&lt;-</span> <span class="fu">c</span>(sdo, regressao_simples<span class="sc">$</span>coefficients[<span class="st">"pre_natal_adequado"</span>][[<span class="dv">1</span>]], regressao_iv<span class="sc">$</span>coefficients[<span class="st">"pre_natal_adequado"</span>][[<span class="dv">1</span>]])</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>erros <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA</span>,</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coef</span>(<span class="fu">summary</span>(regressao_simples))[, <span class="st">"Std. Error"</span>][<span class="st">"pre_natal_adequado"</span>][[<span class="dv">1</span>]],</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coef</span>(<span class="fu">summary</span>(regressao_iv))[, <span class="st">"Std. Error"</span>][<span class="st">"pre_natal_adequado"</span>][[<span class="dv">1</span>]]) </span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>est_f <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA</span>,</span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(regressao_simples)<span class="sc">$</span>fstatistic[<span class="st">'value'</span>][[<span class="dv">1</span>]],</span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(primeiro_estagio)<span class="sc">$</span>fstatistic[<span class="st">'value'</span>][[<span class="dv">1</span>]]</span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>tabela <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">metodo =</span> metodos, <span class="at">coeficiente =</span> coeficientes, <span class="at">erro =</span> erros, <span class="at">F =</span> est_f)</span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>tabela</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>metodos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'SDO bruto'</span>, <span class="st">'MQO com controles'</span>, <span class="st">'IV'</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>coeficientes <span class="ot">&lt;-</span> <span class="fu">c</span>(sdo, regressao_simples<span class="sc">$</span>coefficients[<span class="st">"pre_natal_adequado"</span>][[<span class="dv">1</span>]], regressao_iv<span class="sc">$</span>coefficients[<span class="st">"pre_natal_adequado"</span>][[<span class="dv">1</span>]])</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>erros <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sqrt</span>(<span class="fu">sd</span>(d1<span class="sc">$</span>peso)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="fu">nrow</span>(d1) <span class="sc">+</span> <span class="fu">sd</span>(d0<span class="sc">$</span>peso)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="fu">nrow</span>(d0)),</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coef</span>(<span class="fu">summary</span>(regressao_simples))[, <span class="st">"Std. Error"</span>][<span class="st">"pre_natal_adequado"</span>][[<span class="dv">1</span>]],</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coef</span>(<span class="fu">summary</span>(regressao_iv))[, <span class="st">"Std. Error"</span>][<span class="st">"pre_natal_adequado"</span>][[<span class="dv">1</span>]]) </span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>est_f <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA</span>,</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA</span>,</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(primeiro_estagio)<span class="sc">$</span>fstatistic[<span class="st">'value'</span>][[<span class="dv">1</span>]]</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>tabela <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">metodo =</span> metodos, <span class="at">coeficiente =</span> coeficientes, <span class="at">erro =</span> erros, <span class="at">F =</span> est_f)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>tabela</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>             metodo coeficiente      erro         F
-1         SDO bruto   167.45771        NA        NA
-2 MQO com controles   169.31262  4.224731  286.9576
-3                IV    14.39757 27.186793 1122.0380</code></pre>
+<pre><code>             metodo coeficiente      erro        F
+1         SDO bruto   167.45771  4.772044       NA
+2 MQO com controles   169.31262  4.224731       NA
+3                IV    14.39757 27.186793 1122.038</code></pre>
 </div>
 </div>
-<p>O método mais confiável é o MQO com controles.</p>
+<p>O método mais confiável é o IV. Apesar de ter problemas na hipótese de exclusão e não ser relevante do ponto de vista de impacto no resultado, mostrou que o MQO estava muito enviesado.</p>
 </section>
 </section>
 
