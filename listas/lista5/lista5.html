@@ -109,36 +109,42 @@ window.Quarto = {
 <li>Um instrumento válido deve satisfazer as seguintes hipóteses:</li>
 </ol>
 <ul>
-<li><p>Relevância: o instrumento <span class="math inline">\(Z\)</span> deve ter efeito sobre a variável de interesse <span class="math inline">\(S\)</span>, ou seja, <span class="math inline">\(\text{cov}(Z, S) \neq 0\)</span></p></li>
+<li><p>Relevância: o instrumento <span class="math inline">\(Z\)</span> deve ter efeito ou ser correlacionada sobre a variável de interesse <span class="math inline">\(S\)</span>, ou seja, <span class="math inline">\(\text{cov}(Z, S) \neq 0\)</span></p></li>
 <li><p>Exclusão: o instrumento <span class="math inline">\(Z\)</span> deve afetar o resultado <span class="math inline">\(Y\)</span> apenas através da variável endógena <span class="math inline">\(S\)</span>, sem efeitos diretos com fatores não observáveis como o erro <span class="math inline">\(\varepsilon\)</span>, ou seja, <span class="math inline">\(\text{cov}(Z, \varepsilon) = 0\)</span></p></li>
 </ul>
 <ol start="2" type="a">
-<li><p>A restrição de exclusão é não testável com dados pois é impossível encontrar e medir todas as possíveis variáveis confundidoras e não observavéis para testar a correlação. O pesquisador tem que argumentar teoricamente sua premissa para defender sua validade.</p></li>
+<li><p>A restrição de exclusão é não testável com dados pois é impossível encontrar e medir todas as possíveis variáveis confundidoras e não observavéis para testar a correlação. O pesquisador tem que argumentar teoricamente sua premissa, listando os possíveis outros canais do instrumento ao resultado e porque esses canais são implausíveis.</p></li>
 <li><p>Em relação a usar o trimestre de nascimento como instrumento de educação temos:</p></li>
 </ol>
 <ul>
-<li>relevância: dados de escolas americanas de fato mostraram que há uma correlação diferente de zero entre as variáveis, em que pessoas que nasceram mais no início do ano tendiam a ter menos anos de educação, porém essa relação é muito fraca</li>
+<li>relevância: dados de escolas americanas de fato mostraram que há uma correlação diferente de zero entre as variáveis, em que pessoas que nasceram mais no início do ano tendiam a ter menos anos de educação, porém essa relação pode ser fraca</li>
 <li>independência: o trimestre de nascimento é aleatório em relação ao salário da pessoa. Saber se um indivíduo está no grupo de tratamento ou controle não me traz novas informações sobre seu trimestre de nascimento.</li>
-<li>exclusão: nos diz que a única forma que o trimestre de nascimento afeta os salários é através dos anos de educação. Mas pode ser que uma pessoa que virou maior de idade mais cedo teve acesso a uma oportunidade de profissionalização que uma pessoa mais nova não teve, afetando seu salário.</li>
-<li>monotonicidade: o tirimestre de nascimento das pessoas afeam os anos de escolaridade de forma similar para todos os participantes.</li>
+<li>exclusão: nos diz que a única forma que o trimestre de nascimento afeta os salários é através dos anos de educação. Mas pode ser que uma pessoa que virou maior de idade mais cedo teve acesso a uma oportunidade de profissionalização que uma pessoa mais nova não teve, afetando seu salário. Além disso, um aluno mais velho pode ter uma experiência escolar diferente.</li>
+<li>monotonicidade: o tirimestre de nascimento das pessoas afetam os anos de escolaridade na mesma direção para todos os participantes.</li>
 </ul>
-<p>A ameaça mais séria seria a quebra da hipótese de relvância, visto que o trimestre de nascimento afeta muito pouco os anos de escolaridade.</p>
+<p>A ameaça mais séria seria a quebra da hipótese de exclusão, onde existem canais do instrumento (trimestre) ao resultado (salário) que não passam pelo tratamento (escolaridade).</p>
 </section>
-<section id="estimador-de-wals-e-intuição-do-mq2e" class="level2">
-<h2 class="anchored" data-anchor-id="estimador-de-wals-e-intuição-do-mq2e">2. Estimador de Wals e intuição do MQ2E</h2>
+<section id="estimador-de-wald-e-intuição-do-mq2e" class="level2">
+<h2 class="anchored" data-anchor-id="estimador-de-wald-e-intuição-do-mq2e">2. Estimador de Wald e intuição do MQ2E</h2>
 <p>Considerando <span class="math inline">\(Y_i = \alpha + \delta * S_i + \varepsilon_i\)</span>, com <span class="math inline">\(S_i\)</span> endógena e instrumento <span class="math inline">\(Z_i\)</span> binário.</p>
 <ol type="a">
-<li>Sabendo que <span class="math inline">\(\text{cov}(Y_i, Z_i) = \delta * \text{cov}(S_i, Z_i) + \text{cov}(\varepsilon_i, Z_i)\)</span>:</li>
+<li>Sabendo que <span class="math inline">\(\text{cov}(Y_i, Z_i) = \delta * \text{cov}(S_i, Z_i) + \text{cov}(\varepsilon_i, Z_i)\)</span>, chegar em <span class="math inline">\(\delta_{Wald} = \frac{E[Y|Z=1] - E[Y|Z=0]}{E[S|Z=1] - E[S|Z=0]}\)</span>.</li>
 </ol>
-<p>I. a hipótese de validade do instrumento que permite eliminar o termo <span class="math inline">\(\text{cov}(\varepsilon_i, Z_i)\)</span> é a da restrição de exclusão. Ela diz que o instrumento <span class="math inline">\(Z\)</span> deve afetar o resultado <span class="math inline">\(Y\)</span> apenas através da variável endógena <span class="math inline">\(S\)</span>, sem efeitos diretos com fatores não observáveis como o erro <span class="math inline">\(\varepsilon\)</span>, ou seja, <span class="math inline">\(\text{cov}(Z, \varepsilon) = 0\)</span>.</p>
+<p>I. a hipótese de validade do instrumento que permite eliminar o termo <span class="math inline">\(\text{cov}(\varepsilon_i, Z_i)\)</span> é a da restrição de exclusão. Ela diz que o instrumento <span class="math inline">\(Z\)</span> deve afetar o resultado <span class="math inline">\(Y\)</span> apenas através da variável endógena <span class="math inline">\(S\)</span>, sem efeitos diretos com fatores não observáveis que compõe o erro <span class="math inline">\(\varepsilon\)</span>, ou seja, <span class="math inline">\(\text{cov}(Z, \varepsilon) = 0\)</span>.</p>
 <ol start="2" type="I">
-<li><p>Sabendo que <span class="math inline">\(\text{cov}(\varepsilon_i, Z_i) = 0\)</span>, podemos dizer que <span class="math inline">\(\delta = \frac{\text{cov}(Y_i, Z_i)}{\text{cov}(S_i, Z_i)}\)</span>. Essa razão só é bem definida se <span class="math inline">\(\text{cov}(S_i, Z_i) \neq 0\)</span>. Essa condição nos mostra a hipótese de relevância.</p></li>
-<li></li>
+<li>Sabendo que <span class="math inline">\(\text{cov}(\varepsilon_i, Z_i) = 0\)</span>, podemos dizer que <span class="math inline">\(\delta = \frac{\text{cov}(Y_i, Z_i)}{\text{cov}(S_i, Z_i)}\)</span>. Essa razão só é bem definida se <span class="math inline">\(\text{cov}(S_i, Z_i) \neq 0\)</span>. Essa condição nos mostra a hipótese de relevância.</li>
 </ol>
-<p>V. Dividir um pelo outro recubera o valor de <span class="math inline">\(\delta\)</span> porque eu consigo estimar o efeito do instrumento <span class="math inline">\(Z\)</span> no resultado <span class="math inline">\(Y\)</span> e escalar esse efeito pelo efeito do instrumento <span class="math inline">\(Z\)</span> no tratamento <span class="math inline">\(S\)</span>. As hipóteses usadas na derivação foram as listadas no item 1c.</p>
+<p>V. Dividir um pelo outro recupera o valor de <span class="math inline">\(\delta\)</span> porque eu consigo estimar o efeito do instrumento <span class="math inline">\(Z\)</span> no resultado <span class="math inline">\(Y\)</span> e escalar esse efeito pelo efeito do instrumento <span class="math inline">\(Z\)</span> no tratamento <span class="math inline">\(S\)</span>. As hipóteses usadas na derivação foram as de exclusão e relevância.</p>
 <ol start="2" type="a">
 <li><p>O numerador ou forma reduzida representa o impacto do instrumento <span class="math inline">\(Z\)</span> no resultado <span class="math inline">\(Y\)</span>, ou seja, a regressão de <span class="math inline">\(Y\)</span> em <span class="math inline">\(Z\)</span>. Já o denominador ou primeiro estágio representa o impacto do instrumento <span class="math inline">\(Z\)</span> no tratamento <span class="math inline">\(S\)</span>, ou seja, a regressão de <span class="math inline">\(S\)</span> em <span class="math inline">\(Z\)</span>.</p></li>
-<li><p>Essa substituição, em que <span class="math inline">\(\hat{S}_i = \hat{\alpha}_0 + \hat{\alpha}_1 Z_i\)</span>, resolve a endogeneidade ao garantir que <span class="math inline">\(Z\)</span> não está correlacionada com o termo de erro da regressão, ou seja <span class="math inline">\(\text{cov}(Z, e) = 0\)</span>. Dessa forma, a variação de <span class="math inline">\(S\)</span> mantida é apenas aquela causada pelo instrumento, sem variáveis confundidoras.</p></li>
+<li><p>Essa substituição, em que <span class="math inline">\(\hat{S}_i = \hat{\alpha}_0 + \hat{\alpha}_1 Z_i + \eta\)</span>, resolve a endogeneidade ao garantir que <span class="math inline">\(Z\)</span> não está correlacionada com o termo de erro da regressão, ou seja <span class="math inline">\(\text{cov}(Z, \eta) = 0\)</span>. Dessa forma, descartamos o resíduo <span class="math inline">\(\eta\)</span> e a variação de <span class="math inline">\(S\)</span> mantida é apenas aquela causada pelo instrumento, sem variáveis confundidoras.</p></li>
+</ol>
+</section>
+<section id="instrumentos-fracos-e-vies" class="level2">
+<h2 class="anchored" data-anchor-id="instrumentos-fracos-e-vies">3. Instrumentos fracos e vies</h2>
+<ol type="a">
+<li><p>Quando <span class="math inline">\(F\)</span> tende ao infinito (instrumento forte), o viés tende a zero. Já quando <span class="math inline">\(F\)</span> tende a zero (instrumento fraco) o viés tende a <span class="math inline">\(\frac{\sigma_{v\varepsilon}}{\sigma_{\eta}^2}\)</span>. Esse é o mesmo viés do MQO, ou seja, quando o instrumento é fraco, o seu viés tende ao víes da regressão direta.</p></li>
+<li></li>
 </ol>
 </section>
 <section id="cumprimento-imperfeito-e-tipos-de-compliance" class="level2">
@@ -154,7 +160,7 @@ window.Quarto = {
 </ul>
 <ol start="2" type="a">
 <li><p>A hipótese de monotonicidade diz que o do instrumento não deve aumentar <span class="math inline">\(T\)</span> para uns e diminuir para outros, ou seja, <span class="math inline">\(T_i(1) &gt; T_i(0)\)</span>. Ela exclui os defiers. Ela é necessária para identificar o LATE pois garante que o efeito calculado não mistura efeitos causais opostos e se restrinja apenas aos compliers.</p></li>
-<li><p>Always takers e never takers não contribuem para a estimativa de IV pois seu comportamento não é alterado pelo instrumento. Isso mostra justamente que o efeito calculado pelo instrumento, o LATE, se restringe apenas a um grupo, os compliers, representando um efeito local e não populacional, afetando a validade externa do tratamento (não generalizável).</p></li>
+<li><p>Always takers e never takers não contribuem para a estimativa de IV pois seu comportamento não é alterado pelo instrumento. Isso mostra justamente que o efeito calculado pelo instrumento, o LATE, se restringe apenas a um grupo, os compliers, representando um efeito local e não populacional, afetando a validade externa do tratamento (não necessariamente é generalizável).</p></li>
 </ol>
 </section>
 </section>

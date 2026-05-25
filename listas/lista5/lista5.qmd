@@ -2,7 +2,7 @@
 title: "Resolução da lista 5"
 subtitle: "Curso de inferência causal"
 author: "Camila Brito"
-format: html
+format: pdf
 lang: pt
 ---
 
@@ -37,8 +37,6 @@ I. a hipótese de validade do instrumento que permite eliminar o termo $\text{co
 
 II. Sabendo que $\text{cov}(\varepsilon_i, Z_i) = 0$, podemos dizer que $\delta = \frac{\text{cov}(Y_i, Z_i)}{\text{cov}(S_i, Z_i)}$. Essa razão só é bem definida se $\text{cov}(S_i, Z_i) \neq 0$. Essa condição nos mostra a hipótese de relevância.
 
-III. 
-
 V. Dividir um pelo outro recupera o valor de $\delta$ porque eu consigo estimar o efeito do instrumento $Z$ no resultado $Y$ e escalar esse efeito pelo efeito do instrumento $Z$ no tratamento $S$. As hipóteses usadas na derivação foram as de exclusão e relevância.
 
 b. O numerador ou forma reduzida representa o impacto do instrumento $Z$ no resultado $Y$, ou seja, a regressão de $Y$ em $Z$. Já o denominador ou primeiro estágio representa o impacto do instrumento $Z$ no tratamento $S$, ou seja, a regressão de $S$ em $Z$.
@@ -63,7 +61,3 @@ a. Os quatro tipos de participantes são:
 b. A hipótese de monotonicidade diz que o do instrumento não deve aumentar $T$ para uns e diminuir para outros, ou seja, $T_i(1) > T_i(0)$. Ela exclui os defiers. Ela é necessária para identificar o LATE pois garante que o efeito calculado não mistura efeitos causais opostos e se restrinja apenas aos compliers.
 
 c. Always takers e never takers não contribuem para a estimativa de IV pois seu comportamento não é alterado pelo instrumento. Isso mostra justamente que o efeito calculado pelo instrumento, o LATE, se restringe apenas a um grupo, os compliers, representando um efeito local e não populacional, afetando a validade externa do tratamento (não necessariamente é generalizável). 
-
-## 5. LATE, ITT e relevância para políticas públicas
-
-## 6. Restrição de exclusão na prática
