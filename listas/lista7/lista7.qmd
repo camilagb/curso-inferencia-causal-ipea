@@ -1,0 +1,41 @@
+---
+title: "Resolução da lista 7"
+subtitle: "Curso de inferência causal"
+author: "Camila Brito"
+format: html
+lang: pt
+---
+
+# Seção I - Questões conceituais e teóricas
+
+## 1. Hipóteses de identificação do matching: CIA e suporte comum
+
+a. A hipótese de independência condicional (CIA) diz que $(Y_i(0), Y_i(1) \perp D_i | X_i)$. Ela implica que os resultados potenciais $Y(0), Y(1)$ são independentes do tratamento $D$ se condicionados ao vetor de caractrísticas observáveis $X$, ou seja, um indivíduo do grupo de controle que possui o vetor de observáveis $X$ é um bom contrafactual para um indivíduo do grupo de tratamento com o mesmo vetor. Ela é considerada mais forte do que a hipótese de independência plena pois exige que **todas** as características confundidoras sejam observados.
+
+b. A hipótese de suporte comum diz que $0 < Pr[D_i = 1|X_i] < 1$. Ela é necessária para estimar o ATT pois, para fazer a subtração dos resultados, é necessário que exista uma sobreposição na distribuição dos grupos de controle e tratamento. 
+
+c. Quando usado isoladamente, o matching apresenta limitações, principalmente a existência de características não observáveis, que tornam o matching enviesado (além de outras limitações metodológicas inerentes ao matching, como: qual a distância máxima entre um indivíduo e seu par de controle será permitido? O que fazer quando o suporte comum acaba sendo muito pequeno? etc).
+A literatura combina matching com DiD usando-o como técnica para criar grupos controle e tratamento parecidos antes de aplicar o DiD. Dessa forma, ele não é usado para estimar o efeito causal em si, apenas na criação de grupos comparáveis.
+
+## 2. Propensity score e inverse probability weighting
+
+a. O escore de propensão, definido como $p(x_i) = Pr(D_i = 1 | X_i)$, diz que podemos parear indivíduos com base na probabilidade de receber o tratamento dado o conjunto de características $X$. Nesse caso, a CIA se torna $(Y_i(0), Y_i(1) \perp D_i | p(X_i))$. Ele resolve a maldição da dimensionalidade presente no covariate matching ao substituir o pareamento em todo um conjunto de variáveis ao pareamento por um único escore. Ele é estimado usando modelo probit ou logit, incluido todas as covariadas que podem afetar tanto a participação no tratamento quanto no resultado. 
+
+b. 
+
+- definir quais covariáveis incluir no PSM afeta o viés do estimador: se variáveis confundidoras não forem incluídas, ou seja, variáveis que afetam tanto o tratamento quanto o resultado, o estimador ficará viesado. Também pode afetar a variância: incluir covariadas que afetam apenas o resultado podem reduzir a variância.
+- número de vizinhos e uso de reposição: quando usamos mais de um vizinho ou temos reposição, um mesmo indivíduo do grupo de controle pode aparecer várias vezes, afetando a variância do estimador
+- caliper máximo: definir uma distância máxima entre unidade tratada e controle pode gerar pareamentos não próximos o suficiente e gerar um estimador enviesado. No entanto, escolher uma distância muito pequena pode levar ao descarte de muitos indivíduos tratados, diminuindo o tamanho da amostra e elevando a variância.
+
+c. Com IPW, o estimador é dado por $ATE = \frac{1}{N} \sum \frac{D_iY_i}{p_i} - \frac{1}{N} \sum \frac{(1 - D_i)Y_i}{1 - p_i}$. Nessa ponderação, casos raros (tratados com baixa probabilidade de tratamento e controles com alta probabilidade de tratamento) recebem um peso maior, criando populações hipotéticas de mesma distribuição em que as características observáveis não tem mais relação com o tratamento, simulando um RTC. 
+
+
+## 3. Modelo de efeito fixo em dados em painel
+
+a. O termo $\alpha_i$ é o termo de erro que representa o efeito não obervável do indivíduo $i$ que é fixo no tempo. No modelo de efeitos fixos, esse termo é tratado como explicativo do modelo e pode ser correlacionado aos demais regressores $X_{it}$. Isso viola a hipótese de independência condicional e torna nosso estimador enviesado. 
+
+b. Na transformação within, a média da regressão ao longo do tempo é calculada para cada indivíduo e depois essa média é subtraída do modelo original. Como a média de um termo constante é o prórpio termo, essa subtração elimina o termo de erro $\alpha_i$, já que ele é fixo no tempo. Após essa transformação, todas as variáveis constantes no tempo são perdidas, tanto as não observáveis quanto as não observáveis. Isso pode ser uma limitação caso se queira incluir uma covariada que seja invariante no tempo, como características geográficas que ajudariam a explicar o resultado. 
+
+c. O modelo de efeitos fixos exige a hipóteses de exogeneidade estrita, em que o termo de erro remanescente $u_{it}$ **não** pode ser correlacionado aos demais preditores em todo período de tempo $t$. Já o modelo de efeitos aleatórios, além da hipótese de exogeneidade estrita, também exige a hipótese do efeito fixo exógeno, ou seja, de que o termo $\alpha_i$ **não** é correlacionado com as outras variáveis explicativas do modelo.
+
+## 4. Diferenças em diferenças: Estimador, hipótese e bad controls
