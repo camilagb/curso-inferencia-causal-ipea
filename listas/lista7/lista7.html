@@ -136,6 +136,23 @@ window.Quarto = {
 </section>
 <section id="diferenças-em-diferenças-estimador-hipótese-e-bad-controls" class="level2">
 <h2 class="anchored" data-anchor-id="diferenças-em-diferenças-estimador-hipótese-e-bad-controls">4. Diferenças em diferenças: Estimador, hipótese e bad controls</h2>
+<ol type="a">
+<li></li>
+</ol>
+<ul>
+<li>O DiD pode ser definido como uma dupla dupla diferença: subtração de antes e depois para cada grupo seguido da subtração entre grupos, ou <span class="math inline">\(\delta_{did} = [E(Y|tratado, depois) - E(Y|tratado, antes)] - [E(Y|controle, depois) - E(Y|controle, antes)]\)</span></li>
+<li>Ele pode ser estimado usando a regressão linear <span class="math inline">\(Y_{it} = \alpha + \beta_1AFTER_t + \beta_2TREAT_i + \delta_{did}(AFTER_t x TREAT_i) + \epsilon_{it}\)</span>
+<ul>
+<li><span class="math inline">\(\alpha\)</span>: representa o baseline do grupo controle ou <span class="math inline">\(E(Y|controle, antes)\)</span></li>
+<li><span class="math inline">\(\beta_1\)</span>: é a tendência temporal do controle (mudança de nível do grupo controle antes e depois do tratamento)</li>
+<li><span class="math inline">\(\beta_2\)</span>: é a diferença de nível entre tratado e controle antes do tratamento</li>
+<li><span class="math inline">\(\delta_{did}\)</span>: estimador do DiD, que representa o efeito causal do tratamento - ATT</li>
+</ul></li>
+</ul>
+<ol start="2" type="a">
+<li><p>A hipótese de tendências paralelas é dada por <span class="math inline">\(E[Y_{s,2}(0) - Y_{s,1}(0)] = E[Y_{n,2}(0) - Y_{n,1}(0)]\)</span> . Ela diz que, <strong>na ausência do tratamento</strong> (contrafactual), as tendências temporais dos dois grupos teriam sido as mesmas. O teste de pré-tendências verifica se os coeficientes dos períodos pré-tratamento são próximos de zero. Ele tem algumas limitações: a não garantia que os grupos teriam seguido de forma paralela sem o tratamento e o baixo poder estatístico com poucos períodos pré-tratamento.</p></li>
+<li><p>A regressão TWFE não deve ser controlada por variáveis que possam ter sido afetadas pelo próprio tratamento pois elas representam <em>bad controls</em>: ao adicionar um bad control, ele absorve parte do efeito causal do tratamento e o estimador fica viesado.</p></li>
+</ol>
 </section>
 </section>
 

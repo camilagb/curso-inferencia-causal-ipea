@@ -2,7 +2,7 @@
 title: "Resolução da lista 7"
 subtitle: "Curso de inferência causal"
 author: "Camila Brito"
-format: html
+format: pdf
 lang: pt
 ---
 
@@ -39,3 +39,16 @@ b. Na transformação within, a média da regressão ao longo do tempo é calcul
 c. O modelo de efeitos fixos exige a hipóteses de exogeneidade estrita, em que o termo de erro remanescente $u_{it}$ **não** pode ser correlacionado aos demais preditores em todo período de tempo $t$. Já o modelo de efeitos aleatórios, além da hipótese de exogeneidade estrita, também exige a hipótese do efeito fixo exógeno, ou seja, de que o termo $\alpha_i$ **não** é correlacionado com as outras variáveis explicativas do modelo.
 
 ## 4. Diferenças em diferenças: Estimador, hipótese e bad controls
+
+a. 
+- O DiD pode ser definido como uma dupla dupla diferença: subtração de antes e depois para cada grupo seguido da subtração entre grupos, ou $\delta_{did} = [E(Y|tratado, depois) - E(Y|tratado, antes)] - [E(Y|controle, depois) - E(Y|controle, antes)]$
+- Ele pode ser estimado usando a regressão linear $Y_{it} = \alpha + \beta_1AFTER_t + \beta_2TREAT_i + \delta_{did}(AFTER_t x TREAT_i) + \epsilon_{it}$
+  - $\alpha$: representa o baseline do grupo controle ou $E(Y|controle, antes)$
+  - $\beta_1$: é a tendência temporal do controle (mudança de nível do grupo controle antes e depois do tratamento)
+  - $\beta_2$: é a diferença de nível entre tratado e controle antes do tratamento
+  - $\delta_{did}$: estimador do DiD, que representa o efeito causal do tratamento - ATT
+
+b. A hipótese de tendências paralelas é dada por $E[Y_{s,2}(0) - Y_{s,1}(0)] = E[Y_{n,2}(0) - Y_{n,1}(0)]$ . Ela diz que, **na ausência do tratamento** (contrafactual), as tendências temporais dos dois grupos teriam sido as mesmas. 
+O teste de pré-tendências verifica se os coeficientes dos períodos pré-tratamento são próximos de zero. Ele tem algumas limitações: a não garantia que os grupos teriam seguido de forma paralela sem o tratamento e o baixo poder estatístico com poucos períodos pré-tratamento.
+
+c. A regressão TWFE não deve ser controlada por variáveis que possam ter sido afetadas pelo próprio tratamento pois elas representam *bad controls*: ao adicionar um bad control, ele absorve parte do efeito causal do tratamento e o estimador fica viesado.

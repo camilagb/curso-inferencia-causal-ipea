@@ -1,0 +1,327 @@
+---
+title: "Resolução da lista 8"
+subtitle: "Curso de inferência causal"
+author: "Camila Brito"
+format: pdf
+lang: pt
+execute:
+    warning: false
+---
+
+
+```{r}
+# Instalação de pacotes e bases
+# install.packages(c("haven", "dplyr", "ggplot2", "fixest", 
+# "plm", "MatchIt", "cobalt", "lmtest", 
+# "sandwich", "modelsummary")) 
+
+library(haven);  library(dplyr); library(ggplot2) 
+library(fixest)  # pacote principal desta lista 
+library(plm)     # apenas para RE e Hausman 
+library(MatchIt); library(cobalt) 
+library(lmtest);  library(sandwich)
+library(glue)
+
+# Carregue as bases 
+painel <- read_dta('dados/base_painel.dta')
+hisp   <- read_dta('dados/Dados_HISP_MicroIV.dta')
+```
+
+# Parte I - Dados em Painel: modelo econômico do crime
+
+## 1. Exploração dos dados e variação within/between
+
+a. 
+
+```{r}
+n <- glue("Tamanho da tabela: {nrow(painel)}")
+cols <- glue("Colunas da tabela: {paste0(unlist(names(painel)), collapse=', ')}")
+print(n)
+print(cols)
+```
+
+`prbarr` é a probabilidade de prisão (a variável independente) e `crmrte` é a taxa de criminalidade (a variável resposta).
+
+```{r}
+painel %>%
+ summarise(N = n_distinct(county),
+ T = n_distinct(year),
+ obs = n())
+```
+
+O painel tem 90 indivíduos distintos ao longo de 7 anos, gerando 630 observações.
+
+b. As variações `between` são as variações entre condados (indivíduos/unidades) e as `within` são as variações ao longo do tempo dentro de um mesmo condado. 
+
+```{r}
+painel %>%
+ group_by(county) %>%
+ mutate(crmrte_bar = mean(crmrte),
+ prbarr_bar = mean(prbarr)) %>%
+ ungroup() %>%
+ summarise(
+ sd_total_crime = sd(crmrte),
+ sd_between_crime = sd(crmrte_bar),
+ sd_within_crime = sd(crmrte - crmrte_bar),
+ sd_total_arr = sd(prbarr),
+ sd_between_arr = sd(prbarr_bar),
+ sd_within_arr = sd(prbarr - prbarr_bar)
+ )
+
+```
+
+A variável de probabilidade de prisão apresenta a maior variação within. Se a variação de uma variável for muito pequena, pode ser que não seja possível capturar nenhum efeito causal. Além disso, se a variação temporal de uma variável for nula, o modelo de efeitos fixos some com ela e não é possível estimar seu efeito.
+
+c. 
+
+```{r}
+# Variáveis em log e demeaned
+painel <- painel %>%
+    mutate(
+        lcrmrte = log(crmrte), lprbarr = log(prbarr),
+        lprbconv = log(prbconv), lpolpc = log(polpc),
+        lpctymle = log(pctymle)
+    ) %>%
+    group_by(county) %>%
+    mutate(
+        dm_lcrmrte = lcrmrte - mean(lcrmrte),
+        dm_lprbarr = lprbarr - mean(lprbarr)
+    ) %>%
+ ungroup()
+
+sel <- painel %>% filter(county %in% c(1, 3, 23, 145))
+
+# Bruto
+ggplot(sel, aes(lprbarr, lcrmrte, color=factor(county))) + 
+    geom_point() + 
+    geom_smooth(method="lm", se=FALSE) +
+    labs(title="Bruto", x="log P(Arrest)", y="log Crime Rate")
+
+# Demeaned (within)
+ggplot(sel, aes(dm_lprbarr, dm_lcrmrte, color=factor(county))) +
+    geom_point() +
+    geom_smooth(method="lm", se=FALSE) +
+    labs(title="Demeaned (within)", x="dm P(Arrest)", y="dm Crime Rate")
+
+```
+
+No gráfico com os dados brutos, cada condado tem um nível diferente de prisão e taxa de crime. Já no gráfico demeaned, todos se concentram em torno do zero. Isso mostra que as características inerentes de cada condado foram removidas e podemos olhar para o efeito da prisão sobre a taxa de crime.
+
+
+## 2. POLS, efeito fixo e TWFE com fixest
+
+a. Regressão usando como controle a probabilidade de condenação (`lprbconv`), a porcentagem de polícia per capta (`lpolpc`) e a porcentagem de homens jovens (`lpctymle`).
+
+```{r}
+pols <- feols(lcrmrte ~ lprbarr + lprbconv + lpolpc + lpctymle,
+ data = painel)
+summary(pols)
+```
+
+O estimador é provavelmente viesado pois não controla por confundidores não observáveis.
+
+b. Efeito fixo de condado para absorver as características não observáveis fixas no tempo para cada condado.
+
+```{r}
+fe <- feols(lcrmrte ~ lprbarr + lprbconv + lpolpc + lpctymle |
+county,
+ data = painel, cluster = ~county)
+summary(fe)
+
+# Efeitos fixos estimados (interceptos por condado)
+fixef(fe)[["county"]][1:6]
+```
+
+Na regressão com efeitos fixos de condado, um aumento de 10% na probabilidade de prisão passa a estar associado a uma diminuição de log(34.2) = 1.5% na taxa de crime. Em relação à regressão simples, o efeito da probabilidade de prisão sobre a taxa de criminalidade diminui, pois os efeitos fixos estão absorvendo parte do efeito que a regressão simples não conseguiu capturar. É equivalente a fazer uma variável dummy para cada condado e controlar por eles.
+
+c. TWFE é quando adicionamos efeito fixo de tempo, para absorver características não observáveis variantes no tempo comuns a todos os condados (como choques).
+
+```{r}
+twfe <- feols(lcrmrte ~ lprbarr + lprbconv + lpolpc + lpctymle
+| county + year,
+ data = painel, cluster = ~county)
+summary(twfe)
+# Tabela comparativa com etable()
+etable(pols, fe, twfe,
+ coefstat = "se",
+ dict = c(lprbarr="log P(Arrest)", lprbconv="log P(Conv)",
+ lpolpc="log Polícia p.c."))
+```
+
+Adicionando efeitos fixos de tempo (FE), o coeficiente diminuiu um pouco mais, mostrando que alguma característica temporal comum a todos os condados pode ter ajudado a diminuir a taxa de criminalidade.
+
+Observação:
+usar county + year != county^year 
+county^year representa a interação entre condado e ano. No nosso caso, não é possível fazer essa interação, pois ano já é a unidade mais granular de tempo e não teríamos variação nenhuma. Mas caso possuíssimos observações mensais, poderíamos usar essa interação, como se comparássemos apenas observações dentro de um mesmo condado e dentro de um mesmo ano.
+
+## 3. Efeito Aleatório, Hausman e Tabela Final
+
+a. 
+
+```{r}
+painel_pd <- pdata.frame(painel, index = c("county", "year"))
+fe_plm <- plm(lcrmrte ~ lprbarr + lprbconv + lpolpc + lpctymle,
+ data = painel_pd, model = "within")
+re <- plm(lcrmrte ~ lprbarr + lprbconv + lpolpc + lpctymle,
+ data = painel_pd, model = "random")
+summary(re)
+```
+
+No modelo de efeitos aleatórios (RE), o coeficiente é um pouco maior. Uma grande divergência entre os coeficientes nos dois modelos pode indicar que há correlação entre α_i e os estimadores X_it. Sob sua hipótese de identificação, RE é mais eficiente que FE pois tem uma variância menor dos estimadores, gerando erros padrão menores. Além disso, permite usar variáveis fixas no tempo quue diferem entre indivíduos, aproveitando mais informações dos dados e ganahando precisão. 
+
+b. 
+
+```{r}
+phtest(fe_plm, re)
+```
+
+O p-valor é << 0.05, então rejeitamos a hipótese nula de que RE é consistente -> Cov(α_i, X_it) != 0. Isso significa que RE é viesado e devemos usar FE.
+
+c.
+
+```{r}
+# POLS, FE e TWFE via fixest
+etable(pols, fe, twfe,
+ coefstat = "se", signif.code =
+c("***"=.01,"**"=.05,"*"=.1),
+ keep = "lprbarr",
+ headers = list("_Modelo_" =
+list("POLS"=1,"FE"=1,"TWFE"=1)))
+# RE via modelsummary (aceita objetos plm)
+library(modelsummary)
+modelsummary(list(RE = re),
+ coef_map = c(lprbarr = "log P(Arrest)"),
+ stars = TRUE)
+```
+
+# Parte II — Seleção em Observáveis: PSM e DiD com o HISP
+
+## 4. Análise Exploratória e Viés de Seleção
+
+a.
+
+```{r}
+baseline <- hisp %>% filter(round == 0)
+baseline %>%
+ group_by(enrolled) %>%
+ summarise(across(
+    c(health_expenditures, age_hh, educ_hh, poverty_index, hhsize), 
+    mean, na.rm=TRUE))
+```
+
+As covariáveis de gasto com saúde, idade e índice de pobreza apresentam grande variação entre os grupos. 
+
+b.
+
+```{r}
+followup <- hisp %>% filter(round == 1)
+followup %>%
+ group_by(enrolled) %>%
+ summarise(media_gasto = mean(health_expenditures, na.rm=TRUE)) %>%
+ summarise(dif = diff(media_gasto))
+```
+A diferença simples das médias de gastos entre inscritos e não inscritos no follow up não pode ser interpretada casualmente, pois pode haver diversas variáveis confundidoras enviesando o resultado. Uma família mais jovem pode naturalmente gastar menos com saúde estando ou não inscrita no programa.
+
+c. 
+
+```{r}
+ols_naive <- lm(health_expenditures ~ enrolled + age_hh + educ_hh +
+                  poverty_index + hhsize + female_hh + indigenous,
+                data = followup)
+coeftest(ols_naive, vcov = vcovHC(ols_naive, type = "HC1"))
+```
+
+O coeficiente diminui em relação à diferença simples. A inclusão de controles melhora mas não resolve o problema de viés de seleção.
+
+## 5. Propensity Score Matching
+
+a. Calculando a chance de ser tratado baseado em várias características e rodando um logit. A ideia é encontrar indivíduos parecidos na probabilidade de ser tratado, mas que um foi tratado e outro não e, assim, encontrar grupos comparáveis.
+
+```{r}
+m_out <- matchit(
+ enrolled ~ age_hh + age_sp + educ_hh + educ_sp +
+ female_hh + indigenous + hhsize +
+ dirtfloor + bathroom + land,
+ data = followup,
+ method = "nearest",
+ distance = "logit",
+ ratio = 1,
+ replace = FALSE
+)
+summary(m_out)
+```
+
+No matched data, parte dos controles foi descartada, mantendo apenas os mais parecidos com os tratados. As médias dos dois grupos para as variáveis observáveis são bastante semelhantes.
+
+b.
+
+```{r}
+plot(m_out, type = "jitter", interactive = FALSE)
+# Alternatively: love plot (cobalt)
+love.plot(m_out, threshold = 0.1)
+```
+
+O suporte comum parece razoável, cobrindo toda a extensão do grupo de tratados. Foram excluídos 3984 indivíduos do grupo de controle. 
+
+c.
+
+```{r}
+matched_data <- match.data(m_out)
+att_psm <- lm(health_expenditures ~ enrolled,
+ data = matched_data,
+ weights = weights)
+coeftest(att_psm, vcov = vcovCL(att_psm, cluster = ~subclass))
+```
+O coeficiente passa a ser de -9.8. O programa praticamente atingiu seu objetivo de redução com gastos em saúde.
+
+## 6. Diferenças em Diferenças
+
+a.
+
+```{r}
+hisp <- hisp %>%
+ mutate(
+    after = as.integer(round == 1),
+    treat = enrolled
+)
+# Checar N por grupo e período
+hisp %>% count(treat, after)
+```
+
+b.
+
+```{r}
+# (i) DiD 2x2 com controles — feols com SE clusterizados
+did_2x2 <- feols(
+ health_expenditures ~ treat * after + age_hh + educ_hh +
+poverty_index,
+ data = hisp, cluster = ~locality_identifier
+)
+# (ii) TWFE: FE de domicílio + FE de período
+# A variação explorada é: mudança dentro do domicílio ao longo do tempo
+did_twfe <- feols(
+ health_expenditures ~ i(after, treat, ref = 0) |
+ household_identifier + round,
+ data = hisp, cluster = ~locality_identifier
+)
+etable(did_2x2, did_twfe)
+```
+
+O coeficiente de treat x after com e sem controles é praticamente igual, mostrando que os controles são suficientes e os efeitos fixos não absorvem muita variação. Isso pode acontecer pelo fato de só haver dois períodos no tempo.
+
+c. 
+
+```{r}
+trend_data <- hisp %>%
+ group_by(round, treat) %>%
+ summarise(media = mean(health_expenditures, na.rm=TRUE))
+ggplot(trend_data, aes(x=round, y=media,
+ color=factor(treat), group=factor(treat))) +
+ geom_line(linewidth=1.2) + geom_point(size=3) +
+ scale_x_continuous(breaks=c(0,1),
+ labels=c("Baseline","Follow-up")) +
+ scale_color_manual(values=c("0"="#2E5395","1"="#C0392B"),
+ labels=c("Controle","Tratado")) +
+ labs(title="Tendências: Despesas com Saúde",
+ y="Despesa média (US$)", x="", color="Grupo")
+```
